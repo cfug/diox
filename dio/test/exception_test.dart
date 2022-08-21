@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import 'package:dio/adapter.dart';
 
 void main() {
+  // NOTE: Run test.sh to download the currrent certs to the file below.
   final trustedCertUrl = 'https://sha256.badssl.com/';
   final untrustedCertUrl = 'https://wrong.host.badssl.com/';
 
@@ -175,5 +176,23 @@ void main() {
     expect(response.statusCode, 200);
     response = await dio.get('https://self-signed.badssl.com/');
     expect(response.statusCode, 200);
+  }, testOn: "!browser");
+
+  test('pinning: 2 requests == 2 approvals', () async {
+    int approvalCount = 0;
+    var dio = Dio();
+    // badCertificateCallback never called for trusted certificate
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+        (cert, host, port) {
+      approvalCount++;
+      return fingerprint == sha256.convert(cert!.der).toString();
+    };
+    Response response = await dio.get(trustedCertUrl,
+        options: Options(validateStatus: (status) => true));
+    expect(response.data, isNotNull);
+    response = await dio.get(trustedCertUrl,
+        options: Options(validateStatus: (status) => true));
+    expect(response.data, isNotNull);
+    expect(approvalCount, 2);
   }, testOn: "!browser");
 }
