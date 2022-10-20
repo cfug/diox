@@ -100,7 +100,6 @@ void main() {
   });
 
   test('#read_timeout - change connectTimeout in run time ', () async {
-
     var dio = Dio();
     final adapter = DefaultHttpClientAdapter();
     final http = HttpClient();
@@ -127,6 +126,5 @@ void main() {
       //ignore
     }
     expect(http.connectionTimeout?.inMilliseconds == 1000, isTrue);
-
   });
 }
