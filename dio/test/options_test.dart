@@ -273,7 +273,7 @@ void main() {
 
   test("#test responseDecoder return null", () async {
     final dio = Dio();
-    dio.options.responseDecoder = (_,__,___) => null;
+    dio.options.responseDecoder = (_, __, ___) => null;
     dio.options.baseUrl = EchoAdapter.mockBase;
     dio.httpClientAdapter = EchoAdapter();
 
