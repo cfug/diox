@@ -455,7 +455,7 @@ Because of security reasons, we need all the requests to set up a csrfToken in t
 
         final result = await tokenDio.get('/token');
 
-        if (result.hasSucceed) {
+        if (result.statusCode != null && result.statusCode! ~/ 100 == 2) {
           /// assume `token` is in response body
           final body = jsonDecode(result.data) as Map<String, dynamic>?;
 

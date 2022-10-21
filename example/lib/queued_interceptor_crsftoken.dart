@@ -64,7 +64,8 @@ void main() async {
           /// since the api has no state, force to pass the 401 error
           /// by adding query parameter
           final originResult = await dio.fetch(options..path += '&pass=true');
-          if (originResult.statusCode != null && originResult.statusCode! ~/ 100 == 2) {
+          if (originResult.statusCode != null &&
+              originResult.statusCode! ~/ 100 == 2) {
             return handler.resolve(originResult);
           }
         }
