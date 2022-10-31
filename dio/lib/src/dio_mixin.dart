@@ -729,7 +729,7 @@ abstract class DioMixin implements Dio {
   }
 
   Future<Stream<Uint8List>?> _transformData(RequestOptions options) async {
-    if (_isValidToken(options.method)) {
+    if (!_isValidToken(options.method)) {
       throw ArgumentError.value(options.method, "method");
     }
     var data = options.data;
