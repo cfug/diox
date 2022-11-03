@@ -55,7 +55,7 @@ void main() {
   tearDown(stopServer);
 
   test(
-      '#read_timeout - catch DioError when receiveTimeout < $SLEEP_DURATION_AFTER_CONNECTION_ESTABLISHED',
+      '#read_timeout - catch DioError when receiveTimeout < $_sleepDurationAfterConnectionEstablished',
       () async {
     var dio = Dio();
 
@@ -79,7 +79,7 @@ void main() {
   });
 
   test(
-      '#read_timeout - no DioError when receiveTimeout > $SLEEP_DURATION_AFTER_CONNECTION_ESTABLISHED',
+      '#read_timeout - no DioError when receiveTimeout > $_sleepDurationAfterConnectionEstablished',
       () async {
     var dio = Dio();
 
@@ -110,7 +110,7 @@ void main() {
 
     dio.options
       ..baseUrl = serverUrl.toString()
-      ..connectTimeout = 200;
+      ..connectTimeout = Duration(milliseconds: 200);
 
     try {
       await dio.get('/');
@@ -121,9 +121,9 @@ void main() {
     expect(http.connectionTimeout?.inMilliseconds == 200, isTrue);
 
     try {
-      dio.options.connectTimeout = 1000;
+      dio.options.connectTimeout = Duration(seconds: 1);
       await dio.get('/');
-    } on DioError catch (e) {
+    } on DioError {
       //ignore
     }
     expect(http.connectionTimeout?.inMilliseconds == 1000, isTrue);
