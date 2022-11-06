@@ -2,7 +2,12 @@
 
 ## Breaking Changes
 
-- Improve `DioError`s
+- Improve `DioError`s. There are now more cases in which the inner original stacktrace is supplied. 
+    - `DioErrorType.connectTimeout` was changed to `DioErrorType.connectionTimeout`
+    - `DioErrorType.response` was changed to `DioErrorType.badResponse`
+    - `DioErrorType.other` was changed to `DioErrorType.unknown`
+    - `DioError` has now multiple constructors for specific error cases. Since `DioError` is only thrown internal to the libary, you shouldn't need to adapt any code.
+    - Catching `DioError`s still works the same way as before.
 - Previously `options.connectTimeout` and `options.receiveTimeout` were `int`s. They're now `Duration`s. To migrate change `options.connectTimeout = 1000;` to `options.connectTimeout = Duration(seconds: 1);`. The same applies to `receiveTimeout`. Setting the timeouts to `null` indicates that the system default timeouts should be used.
 
 # 4.0.6
