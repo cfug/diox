@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
 
-class MockAdapter extends HttpClientAdapter {
+import 'package:dio/io.dart';
+import 'package:dio/dio.dart';
+
+class MockAdapter implements HttpClientAdapter {
   static const mockHost = 'mockserver';
   static const mockBase = 'http://$mockHost';
   final _adapter = DefaultHttpClientAdapter();

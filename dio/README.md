@@ -46,6 +46,7 @@ void getHttp() async {
 | [dio_cache_interceptor](https://github.com/llfbandit/dio_cache_interceptor) | [![Pub](https://img.shields.io/pub/v/dio_cache_interceptor.svg?style=flat-square)](https://pub.dev/packages/dio_cache_interceptor) | Dio HTTP cache interceptor with multiple stores respecting HTTP directives (or not)             |
 | [dio_http_cache](https://github.com/hurshi/dio-http-cache) | [![Pub](https://img.shields.io/pub/v/dio_http_cache.svg?style=flat-square)](https://pub.dev/packages/dio_http_cache) | A simple cache library for Dio like Rxcache in Android             |
 | [pretty_dio_logger](https://github.com/Milad-Akarie/pretty_dio_logger) | [![Pub](https://img.shields.io/pub/v/pretty_dio_logger.svg?style=flat-square)](https://pub.dev/packages/pretty_dio_logger) | Pretty Dio logger is a Dio interceptor that logs network calls in a pretty, easy to read format.            |
+| [native_dio_client](https://github.com/ueman/native-dio-client) | [![Pub](https://img.shields.io/pub/v/native_dio_client.svg?style=flat-square)](https://pub.dev/packages/native_dio_client) | An adapter for Dio which makes use of cupertino_http and cronet_http to delegate HTTP requests to the native platform. |
 
 
 ### Related Projects
@@ -664,12 +665,13 @@ HttpClientAdapter is a bridge between Dio and HttpClient.
 
 Dio implements standard and friendly API  for developer.
 
-HttpClient: It is the real object that makes Http requests.
+HttpClientAdapter: It is the real object that makes Http requests.
 
-We can use any HttpClient not just `dart:io:HttpClient` to make the Http request.  And  all we need is providing a `HttpClientAdapter`. The default HttpClientAdapter for Dio is `DefaultHttpClientAdapter`.
+If you want to customize the `HttpClientAdapter` you should instead use
+either `DefaultHttpClientAdapter` on `dart:io` platforms or `BrowserHttpClientAdapter` on `dart:html` platforms.
 
 ```dart
-dio.httpClientAdapter = new DefaultHttpClientAdapter();
+dio.httpClientAdapter = new HttpClientAdapter();
 ```
 
 [Here](https://github.com/flutterchina/dio/blob/master/example/adapter.dart) is a simple example to custom adapter. 
