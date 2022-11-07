@@ -66,7 +66,7 @@ class DioError implements Exception {
     required this.response,
   })  : type = DioErrorType.badResponse,
         message = 'The request returned an '
-            'invalid status code of $statusCode';
+            'invalid status code of $statusCode.';
 
   DioError.connectionTimeout({
     required Duration timeout,
