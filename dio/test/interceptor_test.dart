@@ -285,12 +285,20 @@ void main() {
       expect(response.data['errCode'], 0);
 
       expect(
-        dio.get('/fakepath3').catchError((e) => throw (e as DioError)),
-        throwsA(isA<DioError>()),
+        dio.get('/fakepath3'),
+        throwsA(
+          isA<DioError>()
+              .having((e) => e.message, 'message', null)
+              .having((e) => e.type, 'error type', DioErrorType.unknown),
+        ),
       );
       expect(
-        dio.get('/fakepath4').catchError((e) => throw (e as DioError)),
-        throwsA(isA<DioError>()),
+        dio.get('/fakepath4'),
+        throwsA(
+          isA<DioError>()
+              .having((e) => e.message, 'message', null)
+              .having((e) => e.type, 'error type', DioErrorType.unknown),
+        ),
       );
 
       response = await dio.get('/test');

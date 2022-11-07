@@ -131,12 +131,6 @@ class DioError implements Exception {
     if (error != null) {
       msg += '\nError: $error';
     }
-    if (error is Error && error.stackTrace != stackTrace) {
-      msg += '\nInner error stacktrace:\n${error.stackTrace}';
-    }
-    if (stackTrace != null) {
-      msg += '\nInner stacktrace:\n$stackTrace';
-    }
     return msg;
   }
 }
