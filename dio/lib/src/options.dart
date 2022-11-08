@@ -95,6 +95,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     bool? receiveDataWhenStatusError,
     bool? followRedirects,
     int? maxRedirects,
+    bool? persistentConnection,
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
@@ -112,6 +113,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
           receiveDataWhenStatusError: receiveDataWhenStatusError,
           followRedirects: followRedirects,
           maxRedirects: maxRedirects,
+          persistentConnection: persistentConnection,
           requestEncoder: requestEncoder,
           responseDecoder: responseDecoder,
           listFormat: listFormat,
@@ -138,6 +140,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     bool? receiveDataWhenStatusError,
     bool? followRedirects,
     int? maxRedirects,
+    bool? persistentConnection,
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
@@ -159,6 +162,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
           receiveDataWhenStatusError ?? this.receiveDataWhenStatusError,
       followRedirects: followRedirects ?? this.followRedirects,
       maxRedirects: maxRedirects ?? this.maxRedirects,
+      persistentConnection: persistentConnection ?? this.persistentConnection,
       requestEncoder: requestEncoder ?? this.requestEncoder,
       responseDecoder: responseDecoder ?? this.responseDecoder,
       listFormat: listFormat ?? this.listFormat,
@@ -222,6 +226,7 @@ class Options {
     this.receiveDataWhenStatusError,
     this.followRedirects,
     this.maxRedirects,
+    this.persistentConnection,
     this.requestEncoder,
     this.responseDecoder,
     this.listFormat,
@@ -243,6 +248,7 @@ class Options {
     bool? receiveDataWhenStatusError,
     bool? followRedirects,
     int? maxRedirects,
+    bool? persistentConnection,
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
@@ -279,6 +285,7 @@ class Options {
           receiveDataWhenStatusError ?? this.receiveDataWhenStatusError,
       followRedirects: followRedirects ?? this.followRedirects,
       maxRedirects: maxRedirects ?? this.maxRedirects,
+      persistentConnection: persistentConnection ?? this.persistentConnection,
       requestEncoder: requestEncoder ?? this.requestEncoder,
       responseDecoder: responseDecoder ?? this.responseDecoder,
       listFormat: listFormat ?? this.listFormat,
@@ -330,6 +337,7 @@ class Options {
           receiveDataWhenStatusError ?? baseOpt.receiveDataWhenStatusError,
       followRedirects: followRedirects ?? baseOpt.followRedirects,
       maxRedirects: maxRedirects ?? baseOpt.maxRedirects,
+      persistentConnection: persistentConnection ?? baseOpt.persistentConnection,
       queryParameters: query,
       requestEncoder: requestEncoder ?? baseOpt.requestEncoder,
       responseDecoder: responseDecoder ?? baseOpt.responseDecoder,
@@ -431,6 +439,10 @@ class Options {
   /// The default value is 5.
   int? maxRedirects;
 
+  /// see [HttpClientRequest.persistentConnection],
+  /// The default value is true
+  bool? persistentConnection;
+
   /// The default request encoder is utf8encoder, you can set custom
   /// encoder by this option.
   RequestEncoder? requestEncoder;
@@ -467,6 +479,7 @@ class RequestOptions extends _RequestConfig with OptionsMixin {
     bool? receiveDataWhenStatusError,
     bool? followRedirects,
     int? maxRedirects,
+    bool? persistentConnection,
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
@@ -484,6 +497,7 @@ class RequestOptions extends _RequestConfig with OptionsMixin {
           receiveDataWhenStatusError: receiveDataWhenStatusError,
           followRedirects: followRedirects,
           maxRedirects: maxRedirects,
+          persistentConnection: persistentConnection,
           requestEncoder: requestEncoder,
           responseDecoder: responseDecoder,
           listFormat: listFormat,
@@ -514,6 +528,7 @@ class RequestOptions extends _RequestConfig with OptionsMixin {
     bool? receiveDataWhenStatusError,
     bool? followRedirects,
     int? maxRedirects,
+    bool? persistentConnection,
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
@@ -549,6 +564,7 @@ class RequestOptions extends _RequestConfig with OptionsMixin {
           receiveDataWhenStatusError ?? this.receiveDataWhenStatusError,
       followRedirects: followRedirects ?? this.followRedirects,
       maxRedirects: maxRedirects ?? this.maxRedirects,
+      persistentConnection: persistentConnection ?? this.persistentConnection,
       requestEncoder: requestEncoder ?? this.requestEncoder,
       responseDecoder: responseDecoder ?? this.responseDecoder,
       listFormat: listFormat ?? this.listFormat,
@@ -614,6 +630,7 @@ class _RequestConfig {
     ListFormat? listFormat,
     bool? followRedirects,
     int? maxRedirects,
+    bool? persistentConnection,
     bool? receiveDataWhenStatusError,
     ValidateStatus? validateStatus,
     ResponseType? responseType,
@@ -638,6 +655,7 @@ class _RequestConfig {
     this.extra = extra ?? {};
     this.followRedirects = followRedirects ?? true;
     this.maxRedirects = maxRedirects ?? 5;
+    this.persistentConnection = persistentConnection ?? true;
     this.receiveDataWhenStatusError = receiveDataWhenStatusError ?? true;
     this.validateStatus = validateStatus ??
         (int? status) {
@@ -757,6 +775,10 @@ class _RequestConfig {
   ///
   /// The default value is 5.
   late int maxRedirects;
+
+  /// see [HttpClientRequest.persistentConnection],
+  /// The default value is true
+  late bool persistentConnection;
 
   /// The default request encoder is utf8encoder, you can set custom
   /// encoder by this option.
