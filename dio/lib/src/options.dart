@@ -337,7 +337,8 @@ class Options {
           receiveDataWhenStatusError ?? baseOpt.receiveDataWhenStatusError,
       followRedirects: followRedirects ?? baseOpt.followRedirects,
       maxRedirects: maxRedirects ?? baseOpt.maxRedirects,
-      persistentConnection: persistentConnection ?? baseOpt.persistentConnection,
+      persistentConnection:
+          persistentConnection ?? baseOpt.persistentConnection,
       queryParameters: query,
       requestEncoder: requestEncoder ?? baseOpt.requestEncoder,
       responseDecoder: responseDecoder ?? baseOpt.responseDecoder,
