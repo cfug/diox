@@ -81,9 +81,11 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
               ),
               StackTrace.current,
             );
+            return;
           } else {
             // connectTimeout is triggered after the fetch has been completed.
           }
+          xhr.abort();
           completer.completeError(
             DioError.connectionTimeout(
               requestOptions: options,
@@ -91,7 +93,6 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
             ),
             StackTrace.current,
           );
-          xhr.abort();
         },
       );
     }
