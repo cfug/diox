@@ -1,7 +1,7 @@
 import 'package:crypto/crypto.dart';
 import 'dart:io';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 
 void main() async {
   var dio = Dio();
@@ -16,7 +16,7 @@ void main() async {
       'ee5ce1dfa7a53657c545c62b65802e4272878dabd65c0aadcf85783ebb0b4d5c';
 
   // Don't trust any certificate just because their root cert is trusted
-  (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (_) {
+  (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (_) {
     final client =
         HttpClient(context: SecurityContext(withTrustedRoots: false));
     // You can test the intermediate / root cert here. We just ignore it.
@@ -25,7 +25,7 @@ void main() async {
   };
 
   // Check that the cert fingerprint matches the one we expect
-  (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
+  (dio.httpClientAdapter as IOHttpClientAdapter).validateCertificate =
       (cert, host, port) {
     // We definitely require _some_ certificate
     if (cert == null) return false;

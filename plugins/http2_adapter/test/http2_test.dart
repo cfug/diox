@@ -50,7 +50,7 @@ void main() {
   test('pinning: trusted host allowed with no approver', () async {
     final dio = Dio()
       ..httpClientAdapter = Http2Adapter(ConnectionManager(
-        idleTimeout: 10,
+        idleTimeout: Duration(seconds: 10),
       ));
 
     final res = await dio.get('https://httpbin.org/get');
@@ -65,7 +65,7 @@ void main() {
     try {
       final dio = Dio()
         ..httpClientAdapter = Http2Adapter(ConnectionManager(
-            idleTimeout: 10,
+            idleTimeout: Duration(seconds: 10),
             onClientCreate: (url, config) {
               // Consider all hosts untrusted
               config.context = SecurityContext(withTrustedRoots: false);
@@ -84,7 +84,7 @@ void main() {
     bool approved = false;
     final dio = Dio()
       ..httpClientAdapter = Http2Adapter(ConnectionManager(
-        idleTimeout: 10,
+        idleTimeout: Duration(seconds: 10),
         onClientCreate: (url, config) {
           config.validateCertificate = (certificate, host, port) {
             approved = true;
@@ -105,7 +105,7 @@ void main() {
     bool approved = false;
     final dio = Dio()
       ..httpClientAdapter = Http2Adapter(ConnectionManager(
-        idleTimeout: 10,
+        idleTimeout: Duration(seconds: 10),
         onClientCreate: (url, config) {
           config.context = SecurityContext(withTrustedRoots: false);
           config.onBadCertificate = (certificate) {
@@ -137,7 +137,7 @@ void main() {
 
     final dio = Dio()
       ..httpClientAdapter = Http2Adapter(ConnectionManager(
-        idleTimeout: 10,
+        idleTimeout: Duration(seconds: 10),
         onClientCreate: (url, config) {
           config.context = SecurityContext(withTrustedRoots: false);
           config.onBadCertificate = (certificate) {
@@ -178,7 +178,7 @@ void main() {
       ..options.baseUrl = 'https://httpbin.org/'
       ..httpClientAdapter = Http2Adapter(ConnectionManager(
         // allow connection reuse
-        idleTimeout: 2000,
+        idleTimeout: Duration(seconds: 20),
         onClientCreate: (url, config) {
           config.validateCertificate = (certificate, host, port) {
             approvalCount++;
