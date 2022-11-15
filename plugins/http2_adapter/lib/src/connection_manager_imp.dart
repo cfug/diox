@@ -94,8 +94,9 @@ class _ConnectionManager implements ConnectionManager {
       if (!isCertApproved) {
         throw DioError(
           requestOptions: options,
-          error: 'Response certificate NOT approved.',
-          type: DioErrorType.response,
+          type: DioErrorType.badCertificate,
+          error: socket.peerCertificate,
+          message: 'The certificate of the response is not approved.',
         );
       }
     }

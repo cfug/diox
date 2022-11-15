@@ -6,7 +6,7 @@ import '../options.dart';
 import '../dio_error.dart';
 import '../redirect_record.dart';
 
-@Deprecated('Use IOHttpClientAdapter instead')
+@Deprecated('Use IOHttpClientAdapter instead. This will be removed in 6.0.0')
 typedef DefaultHttpClientAdapter = IOHttpClientAdapter;
 
 typedef OnHttpClientCreate = HttpClient? Function(HttpClient client);
@@ -131,8 +131,9 @@ class IOHttpClientAdapter implements HttpClientAdapter {
       if (!isCertApproved) {
         throw DioError(
           requestOptions: options,
-          error: 'Response certificate NOT approved.',
-          type: DioErrorType.response,
+          type: DioErrorType.badCertificate,
+          error: responseStream.certificate,
+          message: 'The certificate of the response is not approved.',
         );
       }
     }
