@@ -86,7 +86,7 @@ void main() {
       ..httpClientAdapter = Http2Adapter(ConnectionManager(
         idleTimeout: 10,
         onClientCreate: (url, config) {
-          config.responseCertApprover = (certificate, host, port) {
+          config.validateCertificate = (certificate, host, port) {
             approved = true;
             return true;
           };
@@ -112,7 +112,7 @@ void main() {
             badCert = true;
             return true;
           };
-          config.responseCertApprover = (certificate, host, port) {
+          config.validateCertificate = (certificate, host, port) {
             approved = true;
             return true;
           };
@@ -146,7 +146,7 @@ void main() {
             badCertSha256 = sha256.convert(certificate.der).toString();
             return true;
           };
-          config.responseCertApprover = (certificate, host, port) {
+          config.validateCertificate = (certificate, host, port) {
             if (certificate == null) fail('must include a certificate');
             approved = true;
             approverSubject = certificate.subject.toString();
@@ -180,7 +180,7 @@ void main() {
         // allow connection reuse
         idleTimeout: 2000,
         onClientCreate: (url, config) {
-          config.responseCertApprover = (certificate, host, port) {
+          config.validateCertificate = (certificate, host, port) {
             approvalCount++;
             return true;
           };

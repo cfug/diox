@@ -1,6 +1,6 @@
 part of 'http2_adapter.dart';
 
-typedef ResponseCertApprover = bool Function(
+typedef ValidateCertificate = bool Function(
     X509Certificate? certificate, String host, int port);
 
 class ClientSetting {
@@ -22,6 +22,6 @@ class ClientSetting {
   /// This method is called only if both the [SecurityContext] and
   /// [badCertificateCallback] accept the certificate chain. Those
   /// methods evaluate the root or intermediate certificate, while
-  /// [responseCertApprover] evaluates the leaf certificate.
-  ResponseCertApprover? responseCertApprover;
+  /// [validateCertificate] evaluates the leaf certificate.
+  ValidateCertificate? validateCertificate;
 }

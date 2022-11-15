@@ -80,7 +80,7 @@ void main() {
 
     try {
       var dio = Dio();
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
           (certificate, host, port) => false;
       await dio.get(trustedCertUrl);
       fail('did not throw');
@@ -94,7 +94,7 @@ void main() {
   test('pinning: trusted certificate tested and allowed', () async {
     var dio = Dio();
     // badCertificateCallback never called for trusted certificate
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
         (cert, host, port) =>
             fingerprint == sha256.convert(cert!.der).toString();
     final response = await dio.get(trustedCertUrl,
@@ -109,7 +109,7 @@ void main() {
         (_) {
       _.badCertificateCallback = (cert, host, port) => true;
     };
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
         (cert, host, port) =>
             fingerprint == sha256.convert(cert!.der).toString();
     final response = await dio.get(untrustedCertUrl,
@@ -117,7 +117,7 @@ void main() {
     expect(response, isNotNull);
   }, testOn: "!browser");
 
-  test('pinning: untrusted certificate rejected before responseCertApprover',
+  test('pinning: untrusted certificate rejected before validateCertificate',
       () async {
     dynamic error;
 
@@ -125,7 +125,7 @@ void main() {
       var dio = Dio();
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (_) => HttpClient(context: SecurityContext(withTrustedRoots: false));
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
           (cert, host, port) => fail('Should not be evaluated');
       await dio.get(untrustedCertUrl,
           options: Options(validateStatus: (status) => true));
@@ -182,7 +182,7 @@ void main() {
     int approvalCount = 0;
     var dio = Dio();
     // badCertificateCallback never called for trusted certificate
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
         (cert, host, port) {
       approvalCount++;
       return fingerprint == sha256.convert(cert!.der).toString();

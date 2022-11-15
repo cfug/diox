@@ -7,7 +7,7 @@ import '../dio_error.dart';
 import '../redirect_record.dart';
 
 typedef OnHttpClientCreate = HttpClient? Function(HttpClient client);
-typedef ResponseCertApprover = bool Function(
+typedef ValidateCertificate = bool Function(
     X509Certificate? certificate, String host, int port);
 
 HttpClientAdapter createAdapter() => DefaultHttpClientAdapter();
@@ -24,8 +24,8 @@ class DefaultHttpClientAdapter implements HttpClientAdapter {
   /// This method is called only if both the [SecurityContext] and
   /// [badCertificateCallback] accept the certificate chain. Those
   /// methods evaluate the root or intermediate certificate, while
-  /// [responseCertApprover] evaluates the leaf certificate.
-  ResponseCertApprover? responseCertApprover;
+  /// [validateCertificate] evaluates the leaf certificate.
+  ValidateCertificate? validateCertificate;
 
   HttpClient? _defaultHttpClient;
 
@@ -114,11 +114,11 @@ class DefaultHttpClientAdapter implements HttpClientAdapter {
       );
     }
 
-    if (responseCertApprover != null) {
+    if (validateCertificate != null) {
       final host = options.uri.host;
       final port = options.uri.port;
       final isCertApproved =
-          responseCertApprover!(responseStream.certificate, host, port);
+          validateCertificate!(responseStream.certificate, host, port);
       if (!isCertApproved) {
         throw DioError(
           requestOptions: options,

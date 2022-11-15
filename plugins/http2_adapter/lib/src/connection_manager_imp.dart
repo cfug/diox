@@ -91,8 +91,8 @@ class _ConnectionManager implements ConnectionManager {
       rethrow;
     }
 
-    if (clientConfig.responseCertApprover != null) {
-      final isCertApproved = clientConfig.responseCertApprover!(
+    if (clientConfig.validateCertificate != null) {
+      final isCertApproved = clientConfig.validateCertificate!(
           socket.peerCertificate, uri.host, uri.port);
       if (!isCertApproved) {
         throw DioError(

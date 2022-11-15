@@ -25,7 +25,7 @@ void main() async {
   };
 
   // Check that the cert fingerprint matches the one we expect
-  (dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+  (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
       (cert, host, port) {
     // We definitely require _some_ certificate
     if (cert == null) return false;

@@ -696,7 +696,7 @@ String fingerprint = 'ee5ce1dfa7a53657c545c62b65802e4272878dabd65c0aadcf85783ebb
       return client;
     };
 // Check that the cert fingerprint matches the one we expect
-(dio.httpClientAdapter as DefaultHttpClientAdapter).responseCertApprover =
+(dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
     (cert, host, port) {
       // We definitely require _some_ certificate
       if (cert == null) return false;
