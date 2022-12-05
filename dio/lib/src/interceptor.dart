@@ -379,10 +379,10 @@ class Interceptors extends ListMixin<Interceptor> {
 }
 
 class _InterceptorParams<T, V> {
-  _InterceptorParams(this.data, this.handler);
+  const _InterceptorParams(this.data, this.handler);
 
-  T data;
-  V handler;
+  final T data;
+  final V handler;
 }
 
 class _TaskQueue {
@@ -402,7 +402,9 @@ class QueuedInterceptor extends Interceptor {
   final _TaskQueue _errorQueue = _TaskQueue();
 
   void _handleRequest(
-      RequestOptions options, RequestInterceptorHandler handler) {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) {
     _handleQueue(_requestQueue, options, handler, onRequest);
   }
 
@@ -458,12 +460,6 @@ void Function() _processNextTaskInQueueCallback(_TaskQueue taskQueue, cb) {
 ///  - [QueuedInterceptors]
 class QueuedInterceptorsWrapper extends QueuedInterceptor
     with _InterceptorWrapperMixin {
-  final InterceptorSendCallback? __onRequest;
-
-  final InterceptorSuccessCallback? __onResponse;
-
-  final InterceptorErrorCallback? __onError;
-
   QueuedInterceptorsWrapper({
     InterceptorSendCallback? onRequest,
     InterceptorSuccessCallback? onResponse,
@@ -473,11 +469,14 @@ class QueuedInterceptorsWrapper extends QueuedInterceptor
         __onError = onError;
 
   @override
-  InterceptorErrorCallback? get _onError => __onError;
-
-  @override
   InterceptorSendCallback? get _onRequest => __onRequest;
+  final InterceptorSendCallback? __onRequest;
 
   @override
   InterceptorSuccessCallback? get _onResponse => __onResponse;
+  final InterceptorSuccessCallback? __onResponse;
+
+  @override
+  InterceptorErrorCallback? get _onError => __onError;
+  final InterceptorErrorCallback? __onError;
 }
