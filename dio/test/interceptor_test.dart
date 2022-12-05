@@ -114,16 +114,14 @@ void main() {
                 data: 100,
               ));
             } else if (err.requestOptions.path == '/resolve-next/reject-next') {
-              err.error = 1;
-              handler.next(err);
+              handler.next(err.copyWith(error: 1));
             } else {
               if (err.requestOptions.path == '/reject-next/reject') {
                 handler.reject(err);
               } else {
                 int count = err.error as int;
                 count++;
-                err.error = count;
-                handler.next(err);
+                handler.next(err.copyWith(error: count));
               }
             }
           },
@@ -145,13 +143,11 @@ void main() {
             if (err.requestOptions.path == '/resolve-next/reject-next') {
               int count = err.error as int;
               count++;
-              err.error = count;
-              handler.next(err);
+              handler.next(err.copyWith(error: count));
             } else {
               int count = err.error as int;
               count++;
-              err.error = count;
-              handler.next(err);
+              handler.next(err.copyWith(error: count));
             }
           },
         ));
@@ -213,8 +209,7 @@ void main() {
             handler.next(reqOpt.copyWith(path: '/xxx'));
           },
           onError: (err, handler) {
-            err.error = 'unexpected error';
-            handler.next(err);
+            handler.next(err.copyWith(error: 'unexpected error'));
           },
         ),
       );
@@ -346,7 +341,9 @@ void main() {
                 );
               case urlNotFound3:
                 return handler.next(
-                  e..error = 'custom error info [${e.response!.statusCode}]',
+                  e.copyWith(
+                    error: 'custom error info [${e.response!.statusCode}]',
+                  ),
                 );
             }
           }

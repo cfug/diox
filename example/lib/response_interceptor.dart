@@ -37,7 +37,9 @@ void main() async {
             break;
           case urlNotFound3:
             handler.next(
-              e..error = 'custom error info [${e.response?.statusCode}]',
+              e.copyWith(
+                error: 'custom error info [${e.response!.statusCode}]',
+              ),
             );
             break;
         }

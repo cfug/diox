@@ -28,28 +28,31 @@ class CookieManager extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    _saveCookies(response)
-        .then((_) => handler.next(response))
-        .catchError((e, stackTrace) {
-      final err = DioError(requestOptions: response.requestOptions, error: e);
-      err.stackTrace = stackTrace;
-      handler.reject(err, true);
-    });
+    _saveCookies(response).then((_) => handler.next(response)).catchError(
+      (e, s) {
+        final err = DioError(
+          requestOptions: response.requestOptions,
+          error: e,
+          stackTrace: s,
+        );
+        handler.reject(err, true);
+      },
+    );
   }
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
     if (err.response != null) {
-      _saveCookies(err.response!)
-          .then((_) => handler.next(err))
-          .catchError((e, stackTrace) {
-        final _err = DioError(
-          requestOptions: err.response!.requestOptions,
-          error: e,
-        );
-        _err.stackTrace = stackTrace;
-        handler.next(_err);
-      });
+      _saveCookies(err.response!).then((_) => handler.next(err)).catchError(
+        (e, s) {
+          final _err = DioError(
+            requestOptions: err.response!.requestOptions,
+            error: e,
+            stackTrace: s,
+          );
+          handler.next(_err);
+        },
+      );
     } else {
       handler.next(err);
     }
