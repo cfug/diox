@@ -70,7 +70,7 @@ class ResponseBody {
   late Map<String, List<String>> headers;
 
   /// Http status code
-  int? statusCode;
+  int statusCode;
 
   /// Returns the reason phrase associated with the status code.
   /// The reason phrase must be set before the body is written
