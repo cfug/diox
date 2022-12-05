@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 class MockAdapter implements HttpClientAdapter {
   static const mockHost = 'mockserver';
   static const mockBase = 'http://$mockHost';
-  final _adapter = DefaultHttpClientAdapter();
+  final _adapter = IOHttpClientAdapter();
 
   @override
   Future<ResponseBody> fetch(

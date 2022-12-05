@@ -655,23 +655,25 @@ Dio implements standard and friendly API  for developer.
 
 HttpClient: It is the real object that makes Http requests.
 
-We can use any HttpClient not just `dart:io:HttpClient` to make the Http request.  And  all we need is providing a `HttpClientAdapter`. The default HttpClientAdapter for Dio is `DefaultHttpClientAdapter`.
+We can use any HttpClient not just `dart:io:HttpClient` to make the Http request.
+And all we need is providing a `HttpClientAdapter`.
+The default HttpClientAdapter for Dio is `IOHttpClientAdapter`.
 
 ```dart
-dio.httpClientAdapter = new DefaultHttpClientAdapter();
+dio.httpClientAdapter = IOHttpClientAdapter();
 ```
 
 [Here](https://github.com/flutterchina/dio/blob/master/example/adapter.dart) is a simple example to custom adapter. 
 
 ### Using proxy
 
-`DefaultHttpClientAdapter` provide a callback to set proxy to `dart:io:HttpClient`, for example:
+`IOHttpClientAdapter` provide a callback to set proxy to `dart:io:HttpClient`, for example:
 
 ```dart
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
-...
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+//...
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
   // config the http client
   client.findProxy = (uri) {
     //proxy all request to localhost:8888
@@ -694,23 +696,23 @@ Unlike other methods, this one works with the certificate of the server itself.
 
 ```dart
 String fingerprint = 'ee5ce1dfa7a53657c545c62b65802e4272878dabd65c0aadcf85783ebb0b4d5c';
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-    (_) {
-      // Don't trust any certificate just because their root cert is trusted
-      final client = HttpClient(context: SecurityContext(withTrustedRoots: false));
-      // You can test the intermediate / root cert here. We just ignore it.
-      client.badCertificateCallback = (cert, host, port) => true;
-      return client;
-    };
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (_) {
+  // Don't trust any certificate just because their root cert is trusted
+  final client = HttpClient(context: SecurityContext(withTrustedRoots: false));
+  // You can test the intermediate / root cert here. We just ignore it.
+  client.badCertificateCallback = (cert, host, port) => true;
+  return client;
+};
 // Check that the cert fingerprint matches the one we expect
-(dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
-    (cert, host, port) {
-      // We definitely require _some_ certificate
-      if (cert == null) return false;
-      // Validate it any way you want. Here we only check that
-      // the fingerprint matches the OpenSSL SHA256.
-      return fingerprint == sha256.convert(cert.der).toString();
-    };
+(dio.httpClientAdapter as IOHttpClientAdapter).validateCertificate = (cert, host, port) {
+  // We definitely require _some_ certificate
+  if (cert == null) {
+    return false;
+  }
+  // Validate it any way you want. Here we only check that
+  // the fingerprint matches the OpenSSL SHA256.
+  return fingerprint == sha256.convert(cert.der).toString();
+};
 ```
 
 You can use openssl to read the SHA256 value of a certificate:
@@ -731,12 +733,9 @@ There are two ways to verify the root of the https certificate chain provided by
 
 ```dart
 String PEM='XXXXX'; // root certificate content
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-  client.badCertificateCallback=(X509Certificate cert, String host, int port){
-    if(cert.pem==PEM){ // Verify the root certificate
-      return true;
-    }
-    return false;
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
+  client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+    return cert.pem == PEM; // Verify the certificate
   };
 };
 ```
@@ -744,7 +743,7 @@ String PEM='XXXXX'; // root certificate content
 Another way is creating a `SecurityContext` when create the `HttpClient`:
 
 ```dart
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
   SecurityContext sc = SecurityContext();
   //file is the path of root certificate
   sc.setTrustedCertificates(file);

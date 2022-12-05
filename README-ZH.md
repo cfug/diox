@@ -670,19 +670,19 @@ void main() {
 
 HttpClientAdapter是 Dio 和 HttpClient之间的桥梁。2.0抽象出adapter主要是方便切换、定制底层网络库。Dio实现了一套标准的、强大API，而HttpClient则是真正发起Http请求的对象。我们通过HttpClientAdapter将Dio和HttpClient解耦，这样一来便可以自由定制Http请求的底层实现，比如，在Flutter中我们可以通过自定义HttpClientAdapter将Http请求转发到Native中，然后再由Native统一发起请求。再比如，假如有一天OKHttp提供了dart版，你想使用OKHttp发起http请求，那么你便可以通过适配器来无缝切换到OKHttp，而不用改之前的代码。
 
-Dio 使用`DefaultHttpClientAdapter`作为其默认HttpClientAdapter，`DefaultHttpClientAdapter`使用`dart:io:HttpClient` 来发起网络请求。
+Dio 使用`IOHttpClientAdapter`作为其默认HttpClientAdapter，`IOHttpClientAdapter`使用`dart:io:HttpClient` 来发起网络请求。
 
 
 
 ### 设置Http代理
 
-`DefaultHttpClientAdapter` 提供了一个`onHttpClientCreate` 回调来设置底层 `HttpClient`的代理，我们想使用代理，可以参考下面代码：
+`IOHttpClientAdapter` 提供了一个`onHttpClientCreate` 回调来设置底层 `HttpClient`的代理，我们想使用代理，可以参考下面代码：
 
 ```dart
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
-...
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+//...
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
   // config the http client
   client.findProxy = (uri) {
     //proxy all request to localhost:8888
@@ -701,12 +701,9 @@ import 'package:dio/adapter.dart';
 
 ```dart
 String PEM='XXXXX'; // certificate content
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-  client.badCertificateCallback=(X509Certificate cert, String host, int port){
-    if(cert.pem==PEM){ // Verify the certificate
-      return true;
-    }
-    return false;
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
+  client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+    return cert.pem == PEM; // Verify the certificate
   };
 };
 ```
@@ -716,7 +713,7 @@ String PEM='XXXXX'; // certificate content
 对于自签名的证书，我们也可以将其添加到本地证书信任链中，这样证书验证时就会自动通过，而不会再走到`badCertificateCallback`回调中：
 
 ```dart
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
   SecurityContext sc = SecurityContext();
   //file is the path of certificate
   sc.setTrustedCertificates(file);

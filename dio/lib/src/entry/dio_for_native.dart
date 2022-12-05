@@ -17,7 +17,7 @@ class DioForNative with DioMixin implements Dio {
   /// It is recommended that an application use only the same DIO singleton.
   DioForNative([BaseOptions? baseOptions]) {
     options = baseOptions ?? BaseOptions();
-    httpClientAdapter = DefaultHttpClientAdapter();
+    httpClientAdapter = IOHttpClientAdapter();
   }
 
   ///  Download the file and save it in local. The default http method is "GET",

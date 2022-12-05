@@ -46,7 +46,7 @@ void main() {
 
   test('allow badssl', () async {
     final dio = Dio();
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
         (client) {
       return client..badCertificateCallback = (cert, host, port) => true;
     };

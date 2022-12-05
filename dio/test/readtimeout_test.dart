@@ -102,7 +102,7 @@ void main() {
 
   test('#read_timeout - change connectTimeout in run time ', () async {
     final dio = Dio();
-    final adapter = DefaultHttpClientAdapter();
+    final adapter = IOHttpClientAdapter();
     final http = HttpClient();
 
     adapter.onHttpClientCreate = (_) => http;

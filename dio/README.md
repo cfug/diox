@@ -668,23 +668,23 @@ Dio implements standard and friendly API  for developer.
 HttpClientAdapter: It is the real object that makes Http requests.
 
 If you want to customize the `HttpClientAdapter` you should instead use
-either `DefaultHttpClientAdapter` on `dart:io` platforms or `BrowserHttpClientAdapter` on `dart:html` platforms.
+either `IOHttpClientAdapter` on `dart:io` platforms or `BrowserHttpClientAdapter` on `dart:html` platforms.
 
 ```dart
-dio.httpClientAdapter = new HttpClientAdapter();
+dio.httpClientAdapter = HttpClientAdapter();
 ```
 
 [Here](https://github.com/flutterchina/dio/blob/master/example/adapter.dart) is a simple example to custom adapter. 
 
 ### Using proxy
 
-`DefaultHttpClientAdapter` provide a callback to set proxy to `dart:io:HttpClient`, for example:
+`IOHttpClientAdapter` provide a callback to set proxy to `dart:io:HttpClient`, for example:
 
 ```dart
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
 ...
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
   // config the http client
   client.findProxy = (uri) {
     //proxy all request to localhost:8888
@@ -703,7 +703,7 @@ There are two ways  to verify the https certificate. Suppose the certificate for
 
 ```dart
 String PEM='XXXXX'; // certificate content
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
   client.badCertificateCallback=(X509Certificate cert, String host, int port){
     if(cert.pem==PEM){ // Verify the certificate
       return true;
@@ -716,7 +716,7 @@ String PEM='XXXXX'; // certificate content
 Another way is creating a `SecurityContext` when create the `HttpClient`:
 
 ```dart
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
+(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
   SecurityContext sc = SecurityContext();
   //file is the path of certificate
   sc.setTrustedCertificates(file);
