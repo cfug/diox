@@ -14,7 +14,7 @@ A powerful Http client for Dart, which supports Interceptors, Global configurati
 dependencies:
   dio: ^4.0.6
 ```
-> Already know Dio 3 and just want to learn about what's new in Dio 4? Check out the [Migration Guide](./migration_to_4.x.md)!
+> Already know Dio 3 and just want to learn about what's new in Dio 4? Check out the [Migration Guide](./migration_guide.md)!
 
 ### Super simple to use
 

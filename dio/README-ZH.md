@@ -16,7 +16,7 @@ dependencies:
   dio: ^4.0.6
 ```
 
-> 如果你是dio 3.x 用户，想了解4.0的变更，请参考 [4.x更新列表](./migration_guide.md)!
+> 如果你是dio 3.x 用户，想了解4.0的变更，请参考 [重大更新迁移指南](./migration_guide.md).
 
 ## 一个极简的示例
 
