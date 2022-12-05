@@ -24,7 +24,7 @@ class Http2Adapter implements HttpClientAdapter {
   Future<ResponseBody> fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
   ) async {
     final redirects = <RedirectRecord>[];
     return _fetch(
@@ -38,7 +38,7 @@ class Http2Adapter implements HttpClientAdapter {
   Future<ResponseBody> _fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
     List<RedirectRecord> redirects,
   ) async {
     final transport = await _connectionMgr.getConnection(options);

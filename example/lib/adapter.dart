@@ -9,7 +9,7 @@ class MyAdapter implements HttpClientAdapter {
   Future<ResponseBody> fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
   ) async {
     final uri = options.uri;
     // hook requests to  google.com

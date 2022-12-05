@@ -26,7 +26,7 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
   Future<ResponseBody> fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
   ) async {
     final xhr = HttpRequest();
     _xhrs.add(xhr);
@@ -181,7 +181,7 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
       );
     });
 
-    cancelFuture?.then((err) {
+    cancelFuture?.then((_) {
       if (xhr.readyState < 4 && xhr.readyState > 0) {
         connectTimeoutTimer?.cancel();
         try {
@@ -194,7 +194,12 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
         // so need to manual throw the cancel error to avoid Future hang ups.
         // or added xhr.onAbort like axios did https://github.com/axios/axios/blob/master/lib/adapters/xhr.js#L102-L111
         if (!completer.isCompleted) {
-          completer.completeError(err);
+          completer.completeError(
+            DioError.requestCancelled(
+              requestOptions: options,
+              reason: 'The XMLHttpRequest was aborted.',
+            ),
+          );
         }
       }
     });

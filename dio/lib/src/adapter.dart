@@ -28,7 +28,7 @@ abstract class HttpClientAdapter {
 
   /// We should implement this method to make real http requests.
   ///
-  /// [options]: The request options
+  /// [options] are the request options.
   ///
   /// [requestStream] The request stream, It will not be null
   /// only when http method is one of "POST","PUT","PATCH"
@@ -37,18 +37,17 @@ abstract class HttpClientAdapter {
   /// We should give priority to using requestStream(not options.data) as request data.
   /// because supporting stream ensures the `onSendProgress` works.
   ///
-  /// [cancelFuture]: When  cancelled the request, [cancelFuture] will be resolved!
+  /// When cancelled the request, [cancelFuture] will be resolved!
   /// you can listen cancel event by it, for example:
   ///
   /// ```dart
   ///  cancelFuture?.then((_)=>print("request cancelled!"))
   /// ```
-  /// [cancelFuture]: will be null when the request is not set [CancelToken].
-
+  /// [cancelFuture] will be null when the request is not set [CancelToken].
   Future<ResponseBody> fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
   );
 
   void close({bool force = false});

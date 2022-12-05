@@ -38,7 +38,7 @@ class IOHttpClientAdapter implements HttpClientAdapter {
   Future<ResponseBody> fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
   ) async {
     if (_closed) {
       throw Exception(
@@ -176,7 +176,7 @@ class IOHttpClientAdapter implements HttpClientAdapter {
   }
 
   HttpClient _configHttpClient(
-    Future? cancelFuture,
+    Future<void>? cancelFuture,
     Duration? connectionTimeout,
   ) {
     if (cancelFuture != null) {
