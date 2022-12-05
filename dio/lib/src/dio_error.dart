@@ -131,7 +131,7 @@ class DioError implements Exception {
 
   @override
   String toString() {
-    var msg = 'DioError [${type.toPrettyDescription()}]: $message';
+    String msg = 'DioError [${type.toPrettyDescription()}]: $message';
     final error = this.error;
     if (error != null) {
       msg += '\nError: $error';

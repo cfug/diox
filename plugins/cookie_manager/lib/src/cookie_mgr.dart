@@ -14,13 +14,13 @@ class CookieManager extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     cookieJar.loadForRequest(options.uri).then((cookies) {
-      var cookie = getCookies(cookies);
+      final cookie = getCookies(cookies);
       if (cookie.isNotEmpty) {
         options.headers[HttpHeaders.cookieHeader] = cookie;
       }
       handler.next(options);
     }).catchError((e, stackTrace) {
-      var err = DioError(requestOptions: options, error: e);
+      final err = DioError(requestOptions: options, error: e);
       err.stackTrace = stackTrace;
       handler.reject(err, true);
     });
@@ -31,7 +31,7 @@ class CookieManager extends Interceptor {
     _saveCookies(response)
         .then((_) => handler.next(response))
         .catchError((e, stackTrace) {
-      var err = DioError(requestOptions: response.requestOptions, error: e);
+      final err = DioError(requestOptions: response.requestOptions, error: e);
       err.stackTrace = stackTrace;
       handler.reject(err, true);
     });
@@ -43,7 +43,7 @@ class CookieManager extends Interceptor {
       _saveCookies(err.response!)
           .then((_) => handler.next(err))
           .catchError((e, stackTrace) {
-        var _err = DioError(
+        final _err = DioError(
           requestOptions: err.response!.requestOptions,
           error: e,
         );
@@ -56,7 +56,7 @@ class CookieManager extends Interceptor {
   }
 
   Future<void> _saveCookies(Response response) async {
-    var cookies = response.headers[HttpHeaders.setCookieHeader];
+    final cookies = response.headers[HttpHeaders.setCookieHeader];
 
     if (cookies != null) {
       await cookieJar.saveFromResponse(

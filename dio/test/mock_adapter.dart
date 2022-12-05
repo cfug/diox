@@ -70,7 +70,7 @@ class MockAdapter implements HttpClientAdapter {
 
         case '/token':
           {
-            var t = 'ABCDEFGHIJKLMN'.split('')..shuffle();
+            final t = 'ABCDEFGHIJKLMN'.split('')..shuffle();
             return ResponseBody.fromBytes(
               utf8.encode(jsonEncode({
                 'errCode': 0,

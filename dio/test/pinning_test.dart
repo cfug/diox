@@ -26,7 +26,7 @@ void main() {
     dynamic error;
 
     try {
-      var dio = Dio();
+      final dio = Dio();
       await dio.get(untrustedCertUrl);
       fail('did not throw');
     } on DioError catch (e) {
@@ -40,7 +40,7 @@ void main() {
     dynamic error;
 
     try {
-      var dio = Dio();
+      final dio = Dio();
       (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
           (certificate, host, port) => false;
       await dio.get(trustedCertUrl);
@@ -53,7 +53,7 @@ void main() {
   });
 
   test('pinning: trusted certificate tested and allowed', () async {
-    var dio = Dio();
+    final dio = Dio();
     // badCertificateCallback never called for trusted certificate
     (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
         (cert, host, port) =>
@@ -64,7 +64,7 @@ void main() {
   });
 
   test('pinning: untrusted certificate tested and allowed', () async {
-    var dio = Dio();
+    final dio = Dio();
     // badCertificateCallback must allow the untrusted certificate through
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (client) {
@@ -83,7 +83,7 @@ void main() {
     dynamic error;
 
     try {
-      var dio = Dio();
+      final dio = Dio();
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (_) => HttpClient(context: SecurityContext(withTrustedRoots: false));
       (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
@@ -102,7 +102,7 @@ void main() {
     dynamic error;
 
     try {
-      var dio = Dio();
+      final dio = Dio();
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         final effectiveClient =
@@ -126,7 +126,7 @@ void main() {
 
   test('pinning: 2 requests == 2 approvals', () async {
     int approvalCount = 0;
-    var dio = Dio();
+    final dio = Dio();
     // badCertificateCallback never called for trusted certificate
     (dio.httpClientAdapter as DefaultHttpClientAdapter).validateCertificate =
         (cert, host, port) {

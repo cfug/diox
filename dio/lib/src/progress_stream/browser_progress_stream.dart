@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 Stream<Uint8List> addProgress(
     Stream<List<int>> stream, int? length, RequestOptions options) {
   if (stream is Stream<Uint8List>) return stream;
-  var streamTransformer = _transform<List<int>>(stream, length, options);
+  final streamTransformer = _transform<List<int>>(stream, length, options);
   return stream.transform<Uint8List>(streamTransformer);
 }
 

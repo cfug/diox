@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 
 void main() async {
-  var dio = Dio();
+  final dio = Dio();
 
   // TODO: always update to the latest fingerprint.
   // openssl s_client -servername pinning-test.badssl.com \

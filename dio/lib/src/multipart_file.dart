@@ -60,7 +60,7 @@ class MultipartFile {
     MediaType? contentType,
     final Map<String, List<String>>? headers,
   }) {
-    var stream = Stream.fromIterable([value]);
+    final stream = Stream.fromIterable([value]);
     return MultipartFile(
       stream,
       value.length,
@@ -83,7 +83,7 @@ class MultipartFile {
     final Map<String, List<String>>? headers,
   }) {
     contentType ??= MediaType('text', 'plain');
-    var encoding = encodingForCharset(contentType.parameters['charset'], utf8);
+    final encoding = encodingForCharset(contentType.parameters['charset'], utf8);
     contentType = contentType.change(parameters: {'charset': encoding.name});
 
     return MultipartFile.fromBytes(

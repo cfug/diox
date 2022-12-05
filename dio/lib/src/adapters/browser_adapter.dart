@@ -23,18 +23,20 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
   bool withCredentials = false;
 
   @override
-  Future<ResponseBody> fetch(RequestOptions options,
-      Stream<Uint8List>? requestStream, Future? cancelFuture) async {
-    var xhr = HttpRequest();
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future? cancelFuture,
+  ) async {
+    final xhr = HttpRequest();
     _xhrs.add(xhr);
     xhr
       ..open(options.method, '${options.uri}')
       ..responseType = 'arraybuffer';
 
-    var _withCredentials = options.extra['withCredentials'];
-
-    if (_withCredentials != null) {
-      xhr.withCredentials = _withCredentials == true;
+    final withCredentials = options.extra['withCredentials'];
+    if (withCredentials != null) {
+      xhr.withCredentials = withCredentials == true;
     } else {
       xhr.withCredentials = withCredentials;
     }
@@ -50,7 +52,7 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
       xhr.timeout = (connectTimeout + receiveTimeout).inMilliseconds;
     }
 
-    var completer = Completer<ResponseBody>();
+    final completer = Completer<ResponseBody>();
 
     xhr.onLoad.first.then((_) {
       Uint8List body = (xhr.response as ByteBuffer).asUint8List();
@@ -111,7 +113,7 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
           uploadStopwatch.start();
         }
 
-        var duration = uploadStopwatch.elapsed;
+        final duration = uploadStopwatch.elapsed;
         if (duration > sendTimeout) {
           uploadStopwatch.stop();
           completer.completeError(
@@ -138,14 +140,14 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
         connectTimeoutTimer = null;
       }
 
-      final reveiveTimeout = options.receiveTimeout;
-      if (reveiveTimeout != null) {
+      final receiveTimeout = options.receiveTimeout;
+      if (receiveTimeout != null) {
         if (!uploadStopwatch.isRunning) {
           uploadStopwatch.start();
         }
 
         final duration = downloadStopwatch.elapsed;
-        if (duration > reveiveTimeout) {
+        if (duration > receiveTimeout) {
           downloadStopwatch.stop();
           completer.completeError(
             DioError.receiveTimeout(
@@ -198,16 +200,16 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
     });
 
     if (requestStream != null) {
-      var _completer = Completer<Uint8List>();
-      var sink = ByteConversionSink.withCallback(
-          (bytes) => _completer.complete(Uint8List.fromList(bytes)));
+      final completer = Completer<Uint8List>();
+      final sink = ByteConversionSink.withCallback(
+          (bytes) => completer.complete(Uint8List.fromList(bytes)));
       requestStream.listen(
         sink.add,
-        onError: _completer.completeError,
+        onError: completer.completeError,
         onDone: sink.close,
         cancelOnError: true,
       );
-      var bytes = await _completer.future;
+      final bytes = await completer.future;
       xhr.send(bytes);
     } else {
       xhr.send();
@@ -224,7 +226,7 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
   @override
   void close({bool force = false}) {
     if (force) {
-      for (var xhr in _xhrs) {
+      for (final xhr in _xhrs) {
         xhr.abort();
       }
     }

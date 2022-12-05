@@ -3,13 +3,13 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 
 void main() async {
-  var dio = Dio();
+  final dio = Dio();
   dio.options
     ..headers['user-agent'] = 'xxx'
     ..contentType = 'text';
   // dio.options.connectTimeout = 2000;
   // More about HttpClient proxy topic please refer to Dart SDK doc.
-  (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+  (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
       (HttpClient client) {
     client.findProxy = (uri) {
       //proxy all request to localhost:8888
@@ -17,6 +17,7 @@ void main() async {
     };
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
+    return client;
   };
 
   Response<String> response;
