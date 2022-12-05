@@ -131,15 +131,15 @@ class Http2Adapter implements HttpClientAdapter {
         }
       },
       onDone: () => sc.close(),
-      onError: (e) {
+      onError: (dynamic error, StackTrace stackTrace) {
         // If connection is being forcefully terminated, remove the connection
-        if (e is TransportConnectionException) {
+        if (error is TransportConnectionException) {
           _connectionMgr.removeConnection(transport);
         }
         if (!completer.isCompleted) {
-          completer.completeError(e, StackTrace.current);
+          completer.completeError(error, stackTrace);
         } else {
-          sc.addError(e);
+          sc.addError(error, stackTrace);
         }
       },
       cancelOnError: true,
