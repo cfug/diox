@@ -83,7 +83,10 @@ class MultipartFile {
     final Map<String, List<String>>? headers,
   }) {
     contentType ??= MediaType('text', 'plain');
-    final encoding = encodingForCharset(contentType.parameters['charset'], utf8);
+    final encoding = encodingForCharset(
+      contentType.parameters['charset'],
+      utf8,
+    );
     contentType = contentType.change(parameters: {'charset': encoding.name});
 
     return MultipartFile.fromBytes(
