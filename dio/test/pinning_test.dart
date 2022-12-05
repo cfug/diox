@@ -33,7 +33,7 @@ void main() {
       error = e;
     }
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('pinning: every certificate tested and rejected', () async {
@@ -49,7 +49,7 @@ void main() {
       error = e;
     }
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('pinning: trusted certificate tested and allowed', () async {
@@ -95,7 +95,7 @@ void main() {
       error = e;
     }
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('bad pinning: badCertCallback does not use leaf certificate', () async {
@@ -121,7 +121,7 @@ void main() {
       error = e;
     }
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('pinning: 2 requests == 2 approvals', () async {

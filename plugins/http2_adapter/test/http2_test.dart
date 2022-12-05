@@ -77,7 +77,7 @@ void main() {
       error = e;
     }
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('pinning: trusted certificate tested and allowed', () async {

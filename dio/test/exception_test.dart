@@ -14,7 +14,7 @@ void main() {
     }
 
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('catch DioError as Exception', () async {
@@ -23,12 +23,12 @@ void main() {
     try {
       await Dio().get('https://does.not.exist');
       fail('did not throw');
-    } on Exception catch (e) {
+    } on DioError catch (e) {
       error = e;
     }
 
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('catch sslerror: hostname mismatch', () async {
@@ -41,7 +41,7 @@ void main() {
       error = e;
     }
     expect(error, isNotNull);
-    expect(error is Exception, isTrue);
+    expect(error is DioError, isTrue);
   });
 
   test('allow badssl', () async {
