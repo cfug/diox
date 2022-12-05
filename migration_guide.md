@@ -17,16 +17,122 @@ When new content need to be added to the migration guide, make sure they're foll
 
 ### Summary
 
+- `DefaultHttpClientAdapter` is now named `IOHttpClientAdapter`,
+  and the platform independent adapter can be initiated by `HttpClientAdapter()` which is a factory method.
 - Adapters that extends `HttpClientAdapter` must now `implements` instead of `extends`.
 - `DioError` has separate constructors and all fields are annotated as final.
 - `DioErrorType` has different values.
-- `DefaultHttpClientAdapter` is now named `IOHttpClientAdapter`.
 - Imports are split into new libraries, which means users should import
   `dio/io.dart` for natives specific classes, and import `dio/web.dart` for web specific classes.
-- `connectTimeout` and `receiveTimeout
+- `connectTimeout`, `sendTimeout`, and `receiveTimeout` are now `Duration` instead of `int`.
 
 ### Details
 
+#### `HttpClientAdapter`
+
+Before:
+
+```dart
+void initAdapter() {
+  final dio = Dio();
+  // For natives.
+  dio.httpClientAdapter = DefaultHttpClientAdapter();
+  // For web.
+  dio.httpClientAdapter = BrowserHttpClientAdapter();
+}
+```
+
+After:
+
+```dart
+void initAdapter() {
+  final dio = Dio();
+  // Universal adapter that create the adapter for the corresponding platform.
+  dio.httpClientAdapter = HttpClientAdapter();
+  // For natives.
+  dio.httpClientAdapter = IOHttpClientAdapter();
+  // For web.
+  dio.httpClientAdapter = BrowserHttpClientAdapter();
+}
+```
+
+#### Implementing `HttpClientAdapter`
+
+Before:
+```dart
+class ExampleAdapter extends HttpClientAdapter { /* ... */ }
+```
+
+After:
+```dart
+class ExampleAdapter implements HttpClientAdapter { /* ... */ }
+```
+
+#### Const `DioError`
+
+Before:
+
+```dart
+Never throwDioError() {
+  final error = DioError(request: requestOptions, error: err);
+  error.message = 'Custom message.';
+  error.stackTrace = StackTrace.current;
+  throw error;
+}
+```
+
+After:
+
+```dart
+Never throwDioError() {
+  DioError error = DioError(
+    request: requestOptions,
+    error: err,
+    stackTrace: StackTrace.current
+  );
+  error = error.copyWith(message: 'Custom message.');
+  throw error;
+}
+```
+
+#### `DioErrorType` values update
+
+| Before         | After             |
+|:---------------|:------------------|
+| N/A            | badCertificate    |
+| response       | badResponse       |
+| connectTimeout | connectionTimeout |
+| other          | unknown           |
+
+#### `Duration` instead of `int` for timeouts
+
+Before:
+
+```dart
+void request() {
+  final dio = Dio(
+    BaseOptions(
+      connectTimeout: 5000,
+      sendTimeout: 5000,
+      receiveTimeout: 10000,
+    ),
+  );
+}
+```
+
+After:
+
+```dart
+void request() {
+  final dio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(seconds: 5),
+      sendTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
+}
+```
 
 ## 4.0.0
 
