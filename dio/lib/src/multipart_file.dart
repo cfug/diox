@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
 import 'utils.dart';
 
-// ignore: uri_does_not_exist
-import 'multipart_file_stub.dart'
-// ignore: uri_does_not_exist
-    if (dart.library.io) 'multipart_file_io.dart';
+import 'multipart_file/multipart_file_io.dart'
+    if (dart.library.html) 'multipart_file/multipart_file_stub.dart';
 
 /// A file to be uploaded as part of a [MultipartRequest]. This doesn't need to
 /// correspond to a physical file.

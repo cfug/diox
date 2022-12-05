@@ -1,30 +1,30 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:dio/src/adapters/universal_adapter.dart';
+
 import 'options.dart';
 import 'redirect_record.dart';
 
-/// HttpAdapter is a bridge between Dio and HttpClient.
+import 'adapters/io_adapter.dart'
+    if (dart.library.html) 'adapters/browser_adapter.dart' as adapter;
+
+/// [HttpAdapter] is a bridge between [Dio] and [HttpClient].
 ///
-/// Dio: Implements standard and friendly API for developer.
-///
-/// HttpClient: It is the real object that makes Http
+/// [Dio] implements standard and friendly API for developer.
+/// [HttpClient] is the real object that makes Http
 /// requests.
 ///
-/// We can use any HttpClient not just "dart:io:HttpClient" to
-/// make the Http request. All we need is providing a [HttpClientAdapter].
+/// We can use any [HttpClient]s not just "dart:io:HttpClient" to
+/// make the HTTP request. All we need is to provide a [HttpClientAdapter].
 ///
-/// The default HttpClientAdapter for Dio is [HttpClientAdapter].
-///
-/// If you want to customize the `HttpClientAdapter` you should instead use
-/// either `DefaultHttpClientAdapter` on `dart:io` platforms
-/// or `BrowserHttpClientAdapter` on `dart:html` platforms.
+/// If you want to customize the [HttpClientAdapter] you should instead use
+/// either [IOHttpClientAdapter] on `dart:io` platforms
+/// or [BrowserHttpClientAdapter] on `dart:html` platforms.
 ///
 /// ```dart
 /// dio.httpClientAdapter = HttpClientAdapter();
 /// ```
 abstract class HttpClientAdapter {
-  factory HttpClientAdapter() => createAdapter();
+  factory HttpClientAdapter() => adapter.createAdapter();
 
   /// We should implement this method to make real http requests.
   ///

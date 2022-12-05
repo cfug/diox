@@ -14,11 +14,8 @@ import 'options.dart';
 import 'response.dart';
 import 'transformer.dart';
 
-import 'progress_stream_stub.dart'
-// ignore: uri_does_not_exist
-    if (dart.library.html) 'progress_stream/browser_progress_stream.dart'
-// ignore: uri_does_not_exist
-    if (dart.library.io) 'progress_stream/io_progress_stream.dart';
+import 'progress_stream/io_progress_stream.dart'
+    if (dart.library.html) 'progress_stream/browser_progress_stream.dart';
 
 part 'interceptor.dart';
 
