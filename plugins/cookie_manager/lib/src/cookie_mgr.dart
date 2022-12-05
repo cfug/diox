@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 
-/// Don't use this class in Browser environment
+/// Cookie manager for http requests.
+///
+/// You can learn more details about [CookieJar] in
+/// [cookie_jar](https://github.com/flutterchina/cookie_jar).
 class CookieManager extends Interceptor {
-  /// Cookie manager for http requests。Learn more details about
-  /// CookieJar please refer to [cookie_jar](https://github.com/flutterchina/cookie_jar)
-  final CookieJar cookieJar;
+  CookieManager(
+    this.cookieJar,
+  ) : assert(!identical(0, 0.0), "Don't use the manager in Web environments.");
 
-  CookieManager(this.cookieJar);
+  final CookieJar cookieJar;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -19,9 +23,8 @@ class CookieManager extends Interceptor {
         options.headers[HttpHeaders.cookieHeader] = cookie;
       }
       handler.next(options);
-    }).catchError((e, stackTrace) {
-      final err = DioError(requestOptions: options, error: e);
-      err.stackTrace = stackTrace;
+    }).catchError((dynamic e, StackTrace? s) {
+      final err = DioError(requestOptions: options, error: e, stackTrace: s);
       handler.reject(err, true);
     });
   }
