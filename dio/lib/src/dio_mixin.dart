@@ -620,27 +620,20 @@ abstract class DioMixin implements Dio {
           : interceptor.onError;
       future = future.catchError(errorInterceptorWrapper(fun));
     }
-
-    // Normalize errors, we convert error to the DioError
+    // Normalize errors, we convert error to the DioError.
     return future.then<Response<T>>((data) {
       return assureResponse<T>(
         data is InterceptorState ? data.data : data,
         requestOptions,
       );
-    }).catchError((err, StackTrace stackTrace) {
-      final isState = err is InterceptorState;
-
+    }).catchError((dynamic e, StackTrace s) {
+      final isState = e is InterceptorState;
       if (isState) {
-        if ((err as InterceptorState).type == InterceptorResultType.resolve) {
-          return assureResponse<T>(err.data, requestOptions);
+        if ((e as InterceptorState).type == InterceptorResultType.resolve) {
+          return assureResponse<T>(e.data, requestOptions);
         }
       }
-
-      throw assureDioError(
-        isState ? err.data : err,
-        requestOptions,
-        stackTrace,
-      );
+      throw assureDioError(isState ? e.data : e, requestOptions, s);
     });
   }
 

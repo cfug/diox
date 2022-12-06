@@ -100,12 +100,14 @@ class DioError {
   const DioError.receiveTimeout({
     required Duration timeout,
     required this.requestOptions,
+    StackTrace? stackTrace,
   })  : type = DioErrorType.receiveTimeout,
         message = 'The request took '
             'longer than $timeout to receive data. It was aborted.',
         response = null,
         error = null,
-        stackTrace = null;
+        stackTrace =
+            identical(stackTrace, StackTrace.empty) ? null : stackTrace;
 
   const DioError.requestCancelled({
     required this.requestOptions,

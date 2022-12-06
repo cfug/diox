@@ -174,15 +174,13 @@ class DioForNative with DioMixin implements Dio {
           if (cancelToken == null || !cancelToken.isCancelled) {
             subscription.resume();
           }
-        }).catchError((err, StackTrace stackTrace) async {
+        }).catchError((dynamic e, StackTrace s) async {
           try {
             await subscription.cancel();
           } finally {
-            completer.completeError(DioMixin.assureDioError(
-              err,
-              response.requestOptions,
-              stackTrace,
-            ));
+            completer.completeError(
+              DioMixin.assureDioError(e, response.requestOptions, s),
+            );
           }
         });
       },
@@ -192,28 +190,23 @@ class DioForNative with DioMixin implements Dio {
           closed = true;
           await raf.close();
           completer.complete(response);
-        } catch (e, stackTrace) {
-          completer.completeError(DioMixin.assureDioError(
-            e,
-            response.requestOptions,
-            stackTrace,
-          ));
+        } catch (e, s) {
+          completer.completeError(
+            DioMixin.assureDioError(e, response.requestOptions, s),
+          );
         }
       },
-      onError: (e, stackTrace) async {
+      onError: (e, s) async {
         try {
           await closeAndDelete();
         } finally {
-          completer.completeError(DioMixin.assureDioError(
-            e,
-            response.requestOptions,
-            stackTrace as StackTrace?,
-          ));
+          completer.completeError(
+            DioMixin.assureDioError(e, response.requestOptions, s),
+          );
         }
       },
       cancelOnError: true,
     );
-    // ignore: unawaited_futures
     cancelToken?.whenCancel.then((_) async {
       await subscription.cancel();
       await closeAndDelete();
@@ -221,18 +214,21 @@ class DioForNative with DioMixin implements Dio {
 
     final timeout = response.requestOptions.receiveTimeout;
     if (timeout != null) {
-      future = future.timeout(timeout).catchError((Object err) async {
-        await subscription.cancel();
-        await closeAndDelete();
-        if (err is TimeoutException) {
-          throw DioError.receiveTimeout(
-            timeout: timeout,
-            requestOptions: response.requestOptions,
-          );
-        } else {
-          throw err;
-        }
-      });
+      future = future.timeout(timeout).catchError(
+        (dynamic e, StackTrace s) async {
+          await subscription.cancel();
+          await closeAndDelete();
+          if (e is TimeoutException) {
+            throw DioError.receiveTimeout(
+              timeout: timeout,
+              requestOptions: response.requestOptions,
+              stackTrace: s,
+            );
+          } else {
+            throw e;
+          }
+        },
+      );
     }
     return DioMixin.listenCancelForAsyncTask(cancelToken, future);
   }
