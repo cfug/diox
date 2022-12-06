@@ -4,16 +4,25 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 
+const _kIsWeb = bool.hasEnvironment('dart.library.js_util')
+    ? bool.fromEnvironment('dart.library.js_util')
+    : identical(0, 0.0);
+
 /// Cookie manager for http requests.
 ///
 /// You can learn more details about [CookieJar] in
 /// [cookie_jar](https://github.com/flutterchina/cookie_jar).
 class CookieManager extends Interceptor {
-  CookieManager(
+  const CookieManager(
     this.cookieJar,
-  ) : assert(!identical(0, 0.0), "Don't use the manager in Web environments.");
+  ) : assert(!_kIsWeb, "Don't use the manager in Web environments.");
 
   final CookieJar cookieJar;
+
+  /// Merge cookies into a Cookie string.
+  static String getCookies(List<Cookie> cookies) {
+    return cookies.map((cookie) => '${cookie.name}=${cookie.value}').join('; ');
+  }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -70,9 +79,5 @@ class CookieManager extends Interceptor {
         cookies.map((str) => Cookie.fromSetCookieValue(str)).toList(),
       );
     }
-  }
-
-  static String getCookies(List<Cookie> cookies) {
-    return cookies.map((cookie) => '${cookie.name}=${cookie.value}').join('; ');
   }
 }
