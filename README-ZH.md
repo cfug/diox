@@ -451,25 +451,41 @@ print(response.data);//'fake data'
 假设这么一个场景：出于安全原因，我们需要给所有的请求头中添加一个csrfToken，如果csrfToken不存在，我们先去请求csrfToken，获取到csrfToken后再重试。假设刚开始的时候 csrfToken 为 null ，如果允许请求并发，则这些并发请求并行进入拦截器时 csrfToken 都为null，所以它们都需要去请求 csrfToken，这会导致 csrfToken 被请求多次，为了避免不必要的重复请求，可以使用 QueuedInterceptor，这样只需要第一个请求请求一次即可，示例代码如下：
 
 ```dart
-dio.interceptors.add(QueuedInterceptorsWrapper(
-  onRequest: (options, handler) async {
-    print('send request：path:${options.path}，baseURL:${options.baseUrl}');
-    if (csrfToken == null) {
-      print('no token，request token firstly...');
-      tokenDio.get('/token').then((d) {
-        options.headers['csrfToken'] = csrfToken = d.data['data']['token'];
-        print('request token succeed, value: ' + d.data['data']['token']);
-        print( 'continue to perform request：path:${options.path}，baseURL:${options.path}');
-        handler.next(options);
-      }).catchError((error, stackTrace) {
-        handler.reject(error, true);
-      });
-    } else {
+void request() {
+  var dio = Dio();
+  //  dio instance to request token
+  var tokenDio = Dio();
+  String? csrfToken;
+  dio.options.baseUrl = 'https://seunghwanlytest.mocklab.io/';
+  tokenDio.options = dio.options;
+  dio.interceptors.add(QueuedInterceptorsWrapper(
+    onRequest: (options, handler) async {
+      print('send request：path:${options.path}，baseURL:${options.baseUrl}');
+      if (csrfToken == null) {
+        print('no token，request token firstly...');
+        final result = await tokenDio.get('/token');
+        if (result.statusCode != null && result.statusCode! ~/ 100 == 2) {
+          /// assume `token` is in response body
+          final body = jsonDecode(result.data) as Map<String, dynamic>?;
+          if (body != null && body.containsKey('data')) {
+            options.headers['csrfToken'] = csrfToken = body['data']['token'];
+            print('request token succeed, value: $csrfToken');
+            print(
+              'continue to perform request：path:${options.path}，baseURL:${options.path}',
+            );
+            return handler.next(options);
+          }
+        }
+        return handler.reject(
+          DioError(requestOptions: result.requestOptions),
+          true,
+        );
+      }
       options.headers['csrfToken'] = csrfToken;
-      handler.next(options);
-    }
-  }
-));
+      return handler.next(options);
+    },
+  ));
+}
 ```
 
 完整的示例代码请点击 [这里](https://github.com/flutterchina/dio/blob/develop/example/queued_interceptor_crsftoken.dart).
@@ -668,61 +684,124 @@ void main() {
 
 ## HttpClientAdapter
 
-HttpClientAdapter是 Dio 和 HttpClient之间的桥梁。2.0抽象出adapter主要是方便切换、定制底层网络库。Dio实现了一套标准的、强大API，而HttpClient则是真正发起Http请求的对象。我们通过HttpClientAdapter将Dio和HttpClient解耦，这样一来便可以自由定制Http请求的底层实现，比如，在Flutter中我们可以通过自定义HttpClientAdapter将Http请求转发到Native中，然后再由Native统一发起请求。再比如，假如有一天OKHttp提供了dart版，你想使用OKHttp发起http请求，那么你便可以通过适配器来无缝切换到OKHttp，而不用改之前的代码。
+HttpClientAdapter是 Dio 和 HttpClient之间的桥梁。2.0抽象出adapter主要是方便切换、定制底层网络库。
+Dio实现了一套标准的、强大API，而HttpClient则是真正发起Http请求的对象。
+我们通过HttpClientAdapter将Dio和HttpClient解耦，这样一来便可以自由定制Http请求的底层实现，
+比如，在Flutter中我们可以通过自定义HttpClientAdapter将Http请求转发到Native中，然后再由Native统一发起请求。
+再比如，假如有一天OKHttp提供了dart版，你想使用OKHttp发起http请求，那么你便可以通过适配器来无缝切换到OKHttp，而不用改之前的代码。
 
-Dio 使用`IOHttpClientAdapter`作为其默认HttpClientAdapter，`IOHttpClientAdapter`使用`dart:io:HttpClient` 来发起网络请求。
+Dio 使用 `IOHttpClientAdapter` 作为原生平台默认的桥梁，`BrowserClientAdapter` 作为 Web 平台的桥梁。
+你可以通过 `HttpClientAdapter()` 来根据平台创建它们：
 
+```dart
+dio.httpClientAdapter = HttpClientAdapter();
+```
 
+[示例](example/lib/adapter.dart) 包含了一个简单的自定义桥接 adapter 。
 
 ### 设置Http代理
 
-`IOHttpClientAdapter` 提供了一个`onHttpClientCreate` 回调来设置底层 `HttpClient`的代理，我们想使用代理，可以参考下面代码：
+`IOHttpClientAdapter` 提供了一个 `onHttpClientCreate` 回调来设置底层 `HttpClient` 的代理：
 
 ```dart
-import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
-//...
-(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
-  // config the http client
-  client.findProxy = (uri) {
-    //proxy all request to localhost:8888
-    return 'PROXY localhost:8888';
+void initAdapter() {
+  dio.httpClientAdapter = IOHttpClientAdapter()..onHttpClientCreate = (client) {
+    // Config the client.
+    client.findProxy = (uri) {
+      // Forward all request to proxy "localhost:8888".
+      return 'PROXY localhost:8888';
+    };
+    // You can also create a new HttpClient for Dio instead of returning,
+    // but a client must being returned here.
+    return client;
   };
-  // you can also create a HttpClient to dio
-  // return HttpClient();
-};
+}
 ```
 
 完整的示例请查看[这里](https://github.com/flutterchina/dio/blob/master/example/proxy.dart).
 
 ### Https证书校验
 
-有两种方法可以校验https证书，假设我们的后台服务使用的是自签名证书，证书格式是PEM格式，我们将证书的内容保存在本地字符串中，那么我们的校验逻辑如下：
+HTTPS 证书验证（或公钥固定）是指确保端侧与服务器的 TLS 连接的证书是期望的证书，从而减少中间人攻击的机会。
+[OWASP](https://owasp.org/www-community/controls/Certificate_and_Public_Key_Pinning) 中解释了该理论。
+
+**服务器响应证书**
+
+与其他方法不同，此方法使用服务器本身的证书。
 
 ```dart
-String PEM='XXXXX'; // certificate content
-(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
-  client.badCertificateCallback = (X509Certificate cert, String host, int port) {
-    return cert.pem == PEM; // Verify the certificate
+void initAdapter() {
+  const String fingerprint = 'ee5ce1dfa7a53657c545c62b65802e4272878dabd65c0aadcf85783ebb0b4d5c';
+  dio.httpClientAdapter = IOHttpClientAdapter()..onHttpClientCreate = (_) {
+    // Don't trust any certificate just because their root cert is trusted.
+    final HttpClient client = HttpClient(context: SecurityContext(withTrustedRoots: false));
+    // You can test the intermediate / root cert here. We just ignore it.
+    client.badCertificateCallback = (cert, host, port) => true;
+    return client;
+  }..validateCertificate = (cert, host, port) {
+    // Check that the cert fingerprint matches the one we expect.
+    // We definitely require _some_ certificate.
+    if (cert == null) {
+      return false;
+    }
+    // Validate it any way you want. Here we only check that
+    // the fingerprint matches the OpenSSL SHA256.
+    return fingerprint == sha256.convert(cert.der).toString();
   };
-};
+}
 ```
 
-`X509Certificate`是证书的标准格式，包含了证书除私钥外所有信息，读者可以自行查阅文档。另外，上面的示例没有校验host，是因为只要服务器返回的证书内容和本地的保存一致就已经能证明是我们的服务器了（而不是中间人），host验证通常是为了防止证书和域名不匹配。
+你可以使用 OpenSSL 读取密钥的 SHA-256：
 
-对于自签名的证书，我们也可以将其添加到本地证书信任链中，这样证书验证时就会自动通过，而不会再走到`badCertificateCallback`回调中：
+```sh
+openssl s_client -servername pinning-test.badssl.com -connect pinning-test.badssl.com:443 < /dev/null 2>/dev/null \
+  | openssl x509 -noout -fingerprint -sha256
+
+# SHA256 Fingerprint=EE:5C:E1:DF:A7:A5:36:57:C5:45:C6:2B:65:80:2E:42:72:87:8D:AB:D6:5C:0A:AD:CF:85:78:3E:BB:0B:4D:5C
+# (remove the formatting, keep only lower case hex characters to match the `sha256` above)
+```
+
+**证书颁发机构验证**
+
+当您的服务器具有自签名证书时，可以用下面的方法，但它们不适用于 AWS 或 Let's Encrypt 等第三方颁发的证书。
+
+有两种方法可以校验证书，假设我们的后台服务使用的是自签名证书，证书格式是 PEM 格式，我们将证书的内容保存在本地字符串中，
+那么我们的校验逻辑如下：
 
 ```dart
-(dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
-  SecurityContext sc = SecurityContext();
-  //file is the path of certificate
-  sc.setTrustedCertificates(file);
-  HttpClient httpClient = HttpClient(context: sc);
-  return httpClient;
-};
+void initAdapter() {
+  String PEM = 'XXXXX'; // root certificate content
+  dio.httpClientAdapter = IOHttpClientAdapter()..onHttpClientCreate = (client) {
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+      return cert.pem == PEM; // Verify the certificate.
+    };
+    return client;
+  };
+}
 ```
 
-注意，通过`setTrustedCertificates()`设置的证书格式必须为PEM或PKCS12，如果证书格式为PKCS12，则需将证书密码传入，这样则会在代码中暴露证书密码，所以客户端证书校验不建议使用PKCS12格式的证书。
+`X509Certificate`是证书的标准格式，包含了证书除私钥外所有信息，读者可以自行查阅文档。
+另外，上面的示例没有校验 host，是因为只要服务器返回的证书内容和本地的保存一致就已经能证明是我们的服务器了（而不是中间人），
+host 验证通常是为了防止证书和域名不匹配。
+
+对于自签名的证书，我们也可以将其添加到本地证书信任链中，
+这样证书验证时就会自动通过，而不会再走到 `badCertificateCallback` 回调中：
+
+```dart
+void initAdapter() {
+  String PEM = 'XXXXX'; // root certificate content
+  dio.httpClientAdapter = IOHttpClientAdapter()..onHttpClientCreate = (_) {
+    final SecurityContext sc = SecurityContext();
+    sc.setTrustedCertificates(File(pathToTheCertificate));
+    final HttpClient client = HttpClient(context: sc);
+    return client;
+  };
+}
+```
+
+注意，通过 `setTrustedCertificates()` 设置的证书格式必须为 PEM 或 PKCS12，
+如果证书格式为 PKCS12，则需将证书密码传入，
+这样则会在代码中暴露证书密码，所以客户端证书校验不建议使用 PKCS12 格式的证书。
 
 ## Http2支持
 

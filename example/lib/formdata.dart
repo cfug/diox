@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
@@ -86,17 +85,16 @@ void main() async {
   final dio = Dio();
   dio.options.baseUrl = 'http://localhost:3000/';
   dio.interceptors.add(LogInterceptor());
-  //dio.interceptors.add(LogInterceptor(requestBody: true));
-  (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-      (HttpClient client) {
-    client.findProxy = (uri) {
-      //proxy all request to localhost:8888
-      return 'PROXY localhost:8888';
+  // dio.interceptors.add(LogInterceptor(requestBody: true));
+  dio.httpClientAdapter = IOHttpClientAdapter()
+    ..onHttpClientCreate = (client) {
+      client.findProxy = (uri) {
+        // Proxy all request to localhost:8888
+        return 'PROXY localhost:8888';
+      };
+      client.badCertificateCallback = (cert, host, port) => true;
+      return client;
     };
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
-    return client;
-  };
   Response response;
 
   final data1 = await formData1();

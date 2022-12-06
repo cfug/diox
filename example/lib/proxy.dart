@@ -9,16 +9,16 @@ void main() async {
     ..contentType = 'text';
   // dio.options.connectTimeout = 2000;
   // More about HttpClient proxy topic please refer to Dart SDK doc.
-  (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-      (HttpClient client) {
-    client.findProxy = (uri) {
-      //proxy all request to localhost:8888
-      return 'PROXY localhost:8888';
+  dio.httpClientAdapter = IOHttpClientAdapter()
+    ..onHttpClientCreate = (HttpClient client) {
+      client.findProxy = (uri) {
+        //proxy all request to localhost:8888
+        return 'PROXY localhost:8888';
+      };
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
     };
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
-    return client;
-  };
 
   Response<String> response;
   response = await dio.get('https://www.baidu.com');

@@ -18,17 +18,6 @@ parseJson(String text) {
 
 void main() {
   dio.interceptors.add(LogInterceptor());
-  // Add interceptors
-  // dio.interceptors.add(CookieManager(CookieJar()));
-  // (dio.transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
-  // dio.options.receiveTimeout = const Duration(seconds: 15);
-  // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
-  //   client.findProxy = (uri) {
-  //     //proxy to my PC(charles)
-  //     return "PROXY 10.1.10.250:8888";
-  //   };
-  //   return client;
-  // };
   runApp(MyApp());
 }
 
