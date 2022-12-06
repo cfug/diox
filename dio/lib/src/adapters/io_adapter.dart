@@ -179,26 +179,20 @@ class IOHttpClientAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
     Duration? connectionTimeout,
   ) {
+    HttpClient client = onHttpClientCreate?.call(HttpClient()) ?? HttpClient();
     if (cancelFuture != null) {
-      final client = onHttpClientCreate?.call(HttpClient()) ?? HttpClient();
       client.userAgent = null;
       client.idleTimeout = Duration(seconds: 0);
-      cancelFuture.whenComplete(() {
-        try {
-          client.close(force: true);
-        } catch (_) {}
-      });
+      cancelFuture.whenComplete(() => client.close(force: true));
       return client..connectionTimeout = connectionTimeout;
     }
     if (_defaultHttpClient == null) {
-      _defaultHttpClient = HttpClient();
-      _defaultHttpClient!.idleTimeout = Duration(seconds: 3);
-      if (onHttpClientCreate != null) {
-        //user can return a HttpClient instance
-        _defaultHttpClient =
-            onHttpClientCreate!(_defaultHttpClient!) ?? _defaultHttpClient;
+      client.idleTimeout = Duration(seconds: 3);
+      if (onHttpClientCreate?.call(client) != null) {
+        client = onHttpClientCreate!(client)!;
       }
-      _defaultHttpClient!.connectionTimeout = connectionTimeout;
+      client.connectionTimeout = connectionTimeout;
+      _defaultHttpClient = client;
     }
     return _defaultHttpClient!..connectionTimeout = connectionTimeout;
   }

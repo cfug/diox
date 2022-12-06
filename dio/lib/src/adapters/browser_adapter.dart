@@ -207,10 +207,11 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
     if (requestStream != null) {
       final completer = Completer<Uint8List>();
       final sink = ByteConversionSink.withCallback(
-          (bytes) => completer.complete(Uint8List.fromList(bytes)));
+        (bytes) => completer.complete(Uint8List.fromList(bytes)),
+      );
       requestStream.listen(
         sink.add,
-        onError: completer.completeError,
+        onError: (Object e, StackTrace s) => completer.completeError(e, s),
         onDone: sink.close,
         cancelOnError: true,
       );
@@ -219,7 +220,6 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
     } else {
       xhr.send();
     }
-
     return completer.future.whenComplete(() {
       _xhrs.remove(xhr);
     });
