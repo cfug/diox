@@ -6,8 +6,8 @@ import 'headers.dart';
 import 'cancel_token.dart';
 import 'transformer.dart';
 import 'response.dart';
-import 'entry/dio_for_native.dart'
-    if (dart.library.html) 'entry/dio_for_browser.dart';
+import 'dio/dio_for_native.dart'
+    if (dart.library.html) 'dio/dio_for_browser.dart';
 
 /// A powerful Http client for Dart, which supports Interceptors,
 /// Global configuration, FormData, File downloading etc. and Dio is
