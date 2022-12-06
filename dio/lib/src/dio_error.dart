@@ -61,9 +61,9 @@ class DioError {
     this.response,
     this.type = DioErrorType.unknown,
     this.error,
-    this.stackTrace,
+    StackTrace? stackTrace,
     this.message,
-  });
+  }) : stackTrace = identical(stackTrace, StackTrace.empty) ? null : stackTrace;
 
   const DioError.badResponse({
     required int statusCode,
@@ -79,11 +79,13 @@ class DioError {
     required Duration timeout,
     required this.requestOptions,
     this.error,
-    this.stackTrace,
+    StackTrace? stackTrace,
   })  : type = DioErrorType.connectionTimeout,
         message = 'The request connection took '
             'longer than $timeout. It was aborted.',
-        response = null;
+        response = null,
+        stackTrace =
+            identical(stackTrace, StackTrace.empty) ? null : stackTrace;
 
   const DioError.sendTimeout({
     required Duration timeout,
@@ -108,11 +110,13 @@ class DioError {
   const DioError.requestCancelled({
     required this.requestOptions,
     required Object? reason,
-    this.stackTrace,
+    StackTrace? stackTrace,
   })  : type = DioErrorType.cancel,
         message = 'The request was cancelled.',
         error = reason,
-        response = null;
+        response = null,
+        stackTrace =
+            identical(stackTrace, StackTrace.empty) ? null : stackTrace;
 
   const DioError.connectionError({
     required this.requestOptions,
