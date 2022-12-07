@@ -1,55 +1,5 @@
 part of 'dio_mixin.dart';
 
-/// Add lock/unlock API for interceptors.
-class Lock {
-  Future? _lock;
-
-  late Completer _completer;
-
-  /// Whether this interceptor has been locked.
-  bool get locked => _lock != null;
-
-  /// Lock the interceptor.
-  ///
-  /// Once the request/response/error interceptor is locked, the incoming request/response/error
-  /// will wait before entering the interceptor until the interceptor is unlocked.
-  void lock() {
-    if (!locked) {
-      _completer = Completer();
-      _lock = _completer.future;
-    }
-  }
-
-  /// Unlock the interceptor. please refer to [lock()]
-  void unlock() {
-    if (locked) {
-      _completer.complete();
-      _lock = null;
-    }
-  }
-
-  /// Clean the interceptor queue.
-  void clear([String msg = 'cancelled']) {
-    if (locked) {
-      _completer.completeError(msg);
-      _lock = null;
-    }
-  }
-
-  /// If the interceptor is locked, the incoming request/response/error task
-  /// will wait before entering the interceptor until the interceptor is unlocked
-  ///
-  /// [callback] the function  will return a `Future`
-  /// @nodoc
-  Future<T>? _wait<T>(FutureOr<T> Function() callback) {
-    if (locked) {
-      // we use a future as a queue
-      return _lock!.then((d) => callback());
-    }
-    return null;
-  }
-}
-
 /// Internal enum
 /// @nodoc
 enum InterceptorResultType {
@@ -340,27 +290,6 @@ class InterceptorsWrapper extends Interceptor with _InterceptorWrapperMixin {
 /// All interceptors will be executed in first in first out order.
 class Interceptors extends ListMixin<Interceptor> {
   final _list = <Interceptor>[];
-  final Lock _requestLock = Lock();
-  final Lock _responseLock = Lock();
-  final Lock _errorLock = Lock();
-
-  @Deprecated(
-    'Will delete in v5.0. Use `QueuedInterceptor` instead. '
-    'See https://github.com/flutterchina/dio/issues/1308 for more details',
-  )
-  Lock get requestLock => _requestLock;
-
-  @Deprecated(
-    'Will delete in v5.0. Use `QueuedInterceptor` instead. '
-    'See https://github.com/flutterchina/dio/issues/1308 for more details',
-  )
-  Lock get responseLock => _responseLock;
-
-  @Deprecated(
-    'Will delete in v5.0. Use `QueuedInterceptor` instead. '
-    'See https://github.com/flutterchina/dio/issues/1308 for more details',
-  )
-  Lock get errorLock => _errorLock;
 
   @override
   int length = 0;

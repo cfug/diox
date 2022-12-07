@@ -274,38 +274,6 @@ abstract class DioMixin implements Dio {
     );
   }
 
-  /// Lock the current Dio instance.
-  ///
-  /// Dio will enqueue the incoming request tasks instead
-  /// send them directly when [interceptor.requestOptions] is locked.
-  @Deprecated(
-      'Will delete in v5.0. Use `QueuedInterceptor` instead, more detail see'
-      ' https://github.com/flutterchina/dio/issues/1308')
-  @override
-  void lock() {
-    interceptors.requestLock.lock();
-  }
-
-  /// Unlock the current Dio instance.
-  ///
-  /// Dio instance dequeue the request task。
-  @Deprecated(
-      'Will delete in v5.0. Use `QueuedInterceptor` instead, more detail see'
-      ' https://github.com/flutterchina/dio/issues/1308')
-  @override
-  void unlock() {
-    interceptors.requestLock.unlock();
-  }
-
-  ///Clear the current Dio instance waiting queue.
-  @Deprecated(
-      'Will delete in v5.0. Use `QueuedInterceptor` instead, more detail see'
-      ' https://github.com/flutterchina/dio/issues/1308')
-  @override
-  void clear() {
-    interceptors.requestLock.clear();
-  }
-
   ///  Download the file and save it in local. The default http method is 'GET',
   ///  you can custom it by [Options.method].
   ///
@@ -505,11 +473,9 @@ abstract class DioMixin implements Dio {
           return listenCancelForAsyncTask(
             requestOptions.cancelToken,
             Future(() {
-              return checkIfNeedEnqueue(interceptors.requestLock, () {
-                final requestHandler = RequestInterceptorHandler();
-                interceptor(state.data as RequestOptions, requestHandler);
-                return requestHandler.future;
-              });
+              final requestHandler = RequestInterceptorHandler();
+              interceptor(state.data as RequestOptions, requestHandler);
+              return requestHandler.future;
             }),
           );
         } else {
@@ -530,11 +496,9 @@ abstract class DioMixin implements Dio {
           return listenCancelForAsyncTask(
             requestOptions.cancelToken,
             Future(() {
-              return checkIfNeedEnqueue(interceptors.responseLock, () {
-                final responseHandler = ResponseInterceptorHandler();
-                interceptor(state.data as Response, responseHandler);
-                return responseHandler.future;
-              });
+              final responseHandler = ResponseInterceptorHandler();
+              interceptor(state.data as Response, responseHandler);
+              return responseHandler.future;
             }),
           );
         } else {
@@ -564,11 +528,9 @@ abstract class DioMixin implements Dio {
           return listenCancelForAsyncTask(
             requestOptions.cancelToken,
             Future(() {
-              return checkIfNeedEnqueue(interceptors.errorLock, () {
-                final errorHandler = ErrorInterceptorHandler();
-                interceptor(err.data as DioError, errorHandler);
-                return errorHandler.future;
-              });
+              final errorHandler = ErrorInterceptorHandler();
+              interceptor(err.data as DioError, errorHandler);
+              return errorHandler.future;
             }),
           );
         } else {
@@ -679,7 +641,7 @@ abstract class DioMixin implements Dio {
       }
       checkCancelled(cancelToken);
       if (statusOk) {
-        return checkIfNeedEnqueue(interceptors.responseLock, () => ret);
+        return ret;
       } else {
         throw DioError.badResponse(
           statusCode: responseBody.statusCode,
@@ -792,17 +754,6 @@ abstract class DioMixin implements Dio {
     options ??= Options();
     options.method = method;
     return options;
-  }
-
-  static FutureOr<T> checkIfNeedEnqueue<T>(
-    Lock lock,
-    FutureOr<T> Function() callback,
-  ) {
-    if (lock.locked) {
-      return lock._wait(callback)!;
-    } else {
-      return callback();
-    }
   }
 
   static DioError assureDioError(
