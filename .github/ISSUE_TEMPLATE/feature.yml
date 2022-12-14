@@ -1,0 +1,24 @@
+name: 💡 Feature Request
+description: Tell us about a problem diox could solve but doesn't.
+labels: ["Feature Request"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem could diox solve that it doesn't?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Solution Brainstorm
+      description: We know you have bright ideas to share ... share away, friend.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |-
+        ## Thanks 🙏
+    validations:
+      required: false

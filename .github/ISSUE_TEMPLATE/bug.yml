@@ -1,0 +1,69 @@
+name: 🐞 Bug Report
+description: Tell us about something that's not working the way we (probably) intend.
+labels: ["Bug"]
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package has a problem?
+      options:
+        - diox
+        - cookie_manager
+        - http2_adapter
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: 1.2.3
+      description: Which version of that package do you use?
+    validations:
+      required: true
+  - type: input
+    id: flutter_version
+    attributes:
+      label: Flutter Version
+      placeholder: 1.2.3
+      description: Which version of Flutter do you use?
+    validations:
+      required: false
+  - type: input
+    id: dart_version
+    attributes:
+      label: Dart Version
+      placeholder: 1.2.3
+      description: Which version of Dart do you use?
+    validations:
+      required: false
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to Reproduce
+      description: How can we see what you're seeing? Specific is terrific.
+      placeholder: |-
+        1. foo
+        2. bar
+        3. baz
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Result
+      description: Logs? Screenshots? Yes, please.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |-
+        ## Thanks 🙏
+    validations:
+      required: false
