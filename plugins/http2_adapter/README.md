@@ -21,7 +21,7 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 void main() async {
   final dio = Dio()
-    ..options.baseUrl = 'https://dart.dev'
+    ..options.baseUrl = 'https://pub.dev'
     ..interceptors.add(LogInterceptor())
     ..httpClientAdapter = Http2Adapter(
       ConnectionManager(

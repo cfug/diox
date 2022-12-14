@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 void main() async {
   final dio = Dio();
   dio.options
-    ..baseUrl = 'http://httpbin.org/'
+    ..baseUrl = 'https://httpbin.org/'
     ..connectTimeout = Duration(seconds: 5)
     ..receiveTimeout = Duration(seconds: 5)
     ..validateStatus = (int? status) {
