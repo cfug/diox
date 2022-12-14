@@ -55,7 +55,7 @@ void main() {
       dio.httpClientAdapter.close(force: true);
     });
 
-    final url = 'https://accounts.google.com';
+    final url = 'https://pub.dev';
     await expectLater(
       dio.get(url, cancelToken: token),
       throwsA((e) => e is DioError && CancelToken.isCancel(e)),

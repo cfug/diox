@@ -35,11 +35,11 @@ void main() async {
     ))
     ..add(LogInterceptor(responseBody: false)); //Open log;
 
-  Response response = await dio.get('https://www.google.com/');
+  Response response = await dio.get('https://pub.dev/');
 
   // Download a file
   response = await dio.download(
-    'https://www.google.com/',
+    'https://pub.dev/',
     './example/xx.html',
     queryParameters: {'a': 1},
     onReceiveProgress: (received, total) {
