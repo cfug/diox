@@ -1,6 +1,7 @@
 # dio
 
-This is the base repo of the dio project. Please move specific paths for projects instructions.
+This is the base repo of the dio project.
+Please move specific paths for projects instructions.
 
 - dio: [link](dio)
 
