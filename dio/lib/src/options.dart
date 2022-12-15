@@ -641,7 +641,7 @@ class _RequestConfig {
         };
     this.responseType = responseType ?? ResponseType.json;
     if (!contentTypeInHeader) {
-      this.contentType = contentType ?? Headers.jsonContentType;
+      this.contentType = contentType;
     }
   }
 
