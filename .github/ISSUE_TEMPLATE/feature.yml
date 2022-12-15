@@ -16,9 +16,3 @@ body:
       description: We know you have bright ideas to share ... share away, friend.
     validations:
       required: false
-  - type: markdown
-    attributes:
-      value: |-
-        ## Thanks 🙏
-    validations:
-      required: false
