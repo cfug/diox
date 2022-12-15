@@ -351,11 +351,13 @@ void main() {
   });
 
   test('Transform data correctly with requests', () async {
-    final dio = Dio()..httpClientAdapter = EchoAdapter();
+    final dio = Dio()
+      ..httpClientAdapter = EchoAdapter()
+      ..options.baseUrl = EchoAdapter.mockBase;
     const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
     for (final method in methods) {
       final response = await dio.request(
-        'https://mockserver',
+        '/test',
         data: 'test',
         options: Options(method: method),
       );
