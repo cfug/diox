@@ -349,4 +349,17 @@ void main() {
       testInvalidArgumentException("CONNECT$separator");
     }
   });
+
+  test('Transform data correctly with requests', () async {
+    final dio = Dio()..httpClientAdapter = EchoAdapter();
+    const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+    for (final method in methods) {
+      final response = await dio.request(
+        'https://mockserver',
+        data: 'test',
+        options: Options(method: method),
+      );
+      expect(response.data, 'test');
+    }
+  });
 }
