@@ -124,7 +124,7 @@ void main() {
 
     assert(bo1.headers['content-type'] == contentType);
     assert(bo2.headers['content-type'] == contentType);
-    assert(bo3.headers['content-type'] == Headers.jsonContentType);
+    assert(bo3.headers['content-type'] == null);
 
     try {
       bo1.copyWith(headers: headers);

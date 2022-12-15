@@ -295,7 +295,7 @@ class Options {
     if (this.headers != null) {
       headers.addAll(this.headers!);
     }
-    String? contentType = this.headers?[Headers.contentTypeHeader];
+    final String? contentType = this.headers?[Headers.contentTypeHeader];
     final extra = Map<String, dynamic>.from(baseOpt.extra);
     if (this.extra != null) {
       extra.addAll(this.extra!);
@@ -327,7 +327,8 @@ class Options {
     requestOptions.onReceiveProgress = onReceiveProgress;
     requestOptions.onSendProgress = onSendProgress;
     requestOptions.cancelToken = cancelToken;
-    requestOptions.contentType = contentType ?? this.contentType;
+    requestOptions.contentType =
+        contentType ?? this.contentType ?? baseOpt.contentType;
     return requestOptions;
   }
 
