@@ -683,16 +683,27 @@ abstract class DioMixin implements Dio {
       throw ArgumentError.value(options.method, "method");
     }
     final data = options.data;
-    List<int> bytes;
-    Stream<List<int>> stream;
-    const allowPayloadMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
-    if (data != null && allowPayloadMethods.contains(options.method)) {
+    const allowPayloadMethods = [
+      'GET',
+      'POST',
+      'PUT',
+      'PATCH',
+      'DELETE',
+      'OPTIONS',
+    ];
+    if (allowPayloadMethods.contains(options.method) && data != null) {
+      final Stream<List<int>> stream;
       // Handle the FormData
       int? length;
       if (data is Stream) {
-        assert(data is Stream<List>,
-            'Stream type must be `Stream<List>`, but ${data.runtimeType} is found.');
-        stream = data as Stream<List<int>>;
+        if (data is! Stream<List<int>>) {
+          throw ArgumentError.value(
+            data.runtimeType,
+            'data',
+            'Stream type must be `Stream<List<int>>`',
+          );
+        }
+        stream = data;
         options.headers.keys.any((String key) {
           if (key.toLowerCase() == Headers.contentLengthHeader) {
             length = int.parse(options.headers[key].toString());
@@ -708,6 +719,7 @@ abstract class DioMixin implements Dio {
         length = data.length;
         options.headers[Headers.contentLengthHeader] = length.toString();
       } else {
+        final List<int> bytes;
         // Call request transformer.
         final data = await transformer.transformRequest(options);
         if (options.requestEncoder != null) {
