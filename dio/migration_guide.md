@@ -17,6 +17,7 @@ When new content need to be added to the migration guide, make sure they're foll
 
 ### Summary
 
+- `get` and `getUri` in `Dio` has different signature.
 - `DefaultHttpClientAdapter` is now named `IOHttpClientAdapter`,
   and the platform independent adapter can be initiated by `HttpClientAdapter()` which is a factory method.
 - Adapters that extends `HttpClientAdapter` must now `implements` instead of `extends`.
@@ -28,6 +29,30 @@ When new content need to be added to the migration guide, make sure they're foll
 - `connectTimeout`, `sendTimeout`, and `receiveTimeout` are now `Duration` instead of `int`.
 
 ### Details
+
+#### `get` and `getUri`
+
+```diff
+ Future<Response<T>> get<T>(
+   String path, {
++  Object? data,
+   Map<String, dynamic>? queryParameters,
+   Options? options,
+   CancelToken? cancelToken,
+   ProgressCallback? onReceiveProgress,
+ });
+```
+
+```diff
+ Future<Response<T>> getUri<T>(
+   Uri uri, {
++  Object? data,
+   Map<String, dynamic>? queryParameters,
+   Options? options,
+   CancelToken? cancelToken,
+   ProgressCallback? onReceiveProgress,
+ });
+```
 
 #### `HttpClientAdapter`
 
