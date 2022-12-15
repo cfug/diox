@@ -687,15 +687,7 @@ abstract class DioMixin implements Dio {
       throw ArgumentError.value(options.method, "method");
     }
     final data = options.data;
-    const allowPayloadMethods = [
-      'GET',
-      'POST',
-      'PUT',
-      'PATCH',
-      'DELETE',
-      'OPTIONS',
-    ];
-    if (allowPayloadMethods.contains(options.method) && data != null) {
+    if (data != null) {
       final Stream<List<int>> stream;
       // Handle the FormData
       int? length;
