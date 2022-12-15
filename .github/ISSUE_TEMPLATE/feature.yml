@@ -1,11 +1,11 @@
 name: 💡 Feature Request
 description: Tell us about a problem diox could solve but doesn't.
-labels: ["Feature Request"]
+labels: ["s: feature"]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: Problem Statement
+      label: Request Statement
       description: What problem could diox solve that it doesn't?
     validations:
       required: true
