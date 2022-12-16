@@ -35,7 +35,6 @@ void main() {
     });
     test('#test restful APIs', () async {
       Response response;
-
       // test get
       response = await dio.get(
         '/test',
@@ -47,9 +46,12 @@ void main() {
       expect(response.headers.value('single'), equals('value'));
 
       const map = {'content': 'I am playload'};
-
       // test post
-      response = await dio.post('/test', data: map, options: Options(contentType: Headers.jsonContentType));
+      response = await dio.post(
+        '/test',
+        data: map,
+        options: Options(contentType: Headers.jsonContentType),
+      );
       expect(response.data['method'], 'POST');
       expect(response.data['body'], jsonEncode(map));
 
