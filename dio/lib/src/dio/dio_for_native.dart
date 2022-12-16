@@ -103,8 +103,6 @@ class DioForNative with DioMixin implements Dio {
       rethrow;
     }
 
-    response.headers = Headers.fromMap(response.data!.headers);
-
     File file;
     if (savePath is Function) {
       assert(savePath is String Function(Headers),
