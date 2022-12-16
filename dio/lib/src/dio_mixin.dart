@@ -281,7 +281,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response> downloadUri(
     Uri uri,
-    Object savePath, {
+    dynamic savePath, {
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
     bool deleteOnError = true,
@@ -304,7 +304,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response> download(
     String urlPath,
-    Object savePath, {
+    dynamic savePath, {
     ProgressCallback? onReceiveProgress,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,

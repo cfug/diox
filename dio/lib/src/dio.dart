@@ -233,7 +233,7 @@ abstract class Dio {
   /// {@endtemplate}
   Future<Response> download(
     String urlPath,
-    Object savePath, {
+    dynamic savePath, {
     ProgressCallback? onReceiveProgress,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
@@ -246,7 +246,7 @@ abstract class Dio {
   /// {@macro dio.Dio.download}
   Future<Response> downloadUri(
     Uri uri,
-    Object savePath, {
+    dynamic savePath, {
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
     bool deleteOnError = true,

@@ -25,7 +25,7 @@ class DioForNative with DioMixin implements Dio {
   @override
   Future<Response> download(
     String urlPath,
-    Object savePath, {
+    dynamic savePath, {
     ProgressCallback? onReceiveProgress,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
