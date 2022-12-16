@@ -2,6 +2,7 @@
 
 ## 5.0.0-dev.1
 
+- Allow asynchronized method with `savePath`.
 - Allow `data` in all request methods.
 - A platform independent `HttpClientAdapter` can now be instantiated by doing
   `dio.httpClientAdapter = HttpClientAdapter();`.
@@ -149,8 +150,8 @@ the subsequent interceptors processing logic more finely (whether to skip them o
 ### New features
 
 - Support Flutter Web.
-- Extract [CookieManager](/plugins/cookie_manager) into a separate package（No need for Flutter Web）.
-- Provides [HTTP/2.0 HttpClientAdapter](/plugins/http2_adapter).
+- Extract [CookieManager](../plugins/cookie_manager) into a separate package（No need for Flutter Web）.
+- Provides [HTTP/2.0 HttpClientAdapter](../plugins/http2_adapter).
 
 ### Change List
 
