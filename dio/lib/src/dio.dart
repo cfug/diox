@@ -176,48 +176,61 @@ abstract class Dio {
     ProgressCallback? onReceiveProgress,
   });
 
-  ///  Download the file and save it in local. The default http method is "GET",
-  ///  you can custom it by [Options.method].
+  /// {@template dio.Dio.download}
+  /// Download the file and save it in local. The default http method is "GET",
+  /// you can custom it by [Options.method].
   ///
-  ///  [urlPath]: The file url.
+  /// [urlPath] is the file url.
   ///
-  ///  [savePath]: The path to save the downloading file later. it can be a String or
-  ///  a callback:
-  ///  1. A path with String type, eg "xs.jpg"
-  ///  2. A callback `String Function(Headers headers)`; for example:
-  ///  ```dart
-  ///   await dio.download(url,(Headers headers){
-  ///        // Extra info: redirect counts
-  ///        print(headers.value('redirects'));
-  ///        // Extra info: real uri
-  ///        print(headers.value('uri'));
-  ///      ...
-  ///      return "...";
-  ///    });
-  ///  ```
+  /// [savePath] is the path to save the downloading file later. it can be a String or
+  /// a callback:
+  /// 1. A path with String type, eg "xs.jpg"
+  /// 2. A callback `String Function(Headers headers)`; for example:
+  /// ```dart
+  /// await dio.download(
+  ///   url,
+  ///   (Headers headers) {
+  ///     // Extra info: redirect counts
+  ///     print(headers.value('redirects'));
+  ///     // Extra info: real uri
+  ///     print(headers.value('uri'));
+  ///     // ...
+  ///     return (await getTemporaryDirectory()).path + 'file_name';
+  ///   },
+  /// );
+  /// ```
   ///
-  ///  [onReceiveProgress]: The callback to listen downloading progress.
-  ///  please refer to [ProgressCallback].
+  /// [onReceiveProgress] is the callback to listen downloading progress.
+  /// Please refer to [ProgressCallback].
   ///
-  /// [deleteOnError] Whether delete the file when error occurs. The default value is [true].
+  /// [deleteOnError] whether delete the file when error occurs.
+  /// The default value is [true].
   ///
-  ///  [lengthHeader] : The real size of original file (not compressed).
-  ///  When file is compressed:
-  ///  1. If this value is 'content-length', the `total` argument of `onProgress` will be -1
-  ///  2. If this value is not 'content-length', maybe a custom header indicates the original
-  ///  file size , the `total` argument of `onProgress` will be this header value.
+  /// [lengthHeader] : The real size of original file (not compressed).
+  /// When file is compressed:
+  /// 1. If this value is 'content-length', the `total` argument of `onProgress` will be -1
+  /// 2. If this value is not 'content-length', maybe a custom header indicates the original
+  /// file size , the `total` argument of `onProgress` will be this header value.
   ///
-  ///  you can also disable the compression by specifying the 'accept-encoding' header value as '*'
-  ///  to assure the value of `total` argument of `onProgress` is not -1. for example:
+  /// You can also disable the compression by specifying
+  /// the 'accept-encoding' header value as '*' to assure the value of
+  /// `total` argument of `onProgress` is not -1. for example:
   ///
-  ///     await dio.download(url, "./example/flutter.svg",
-  ///     options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),  // disable gzip
-  ///     onProgress: (received, total) {
-  ///       if (total != -1) {
-  ///        print((received / total * 100).toStringAsFixed(0) + "%");
-  ///       }
-  ///     });
-
+  /// ```dart
+  /// await dio.download(
+  ///   url,
+  ///   (await getTemporaryDirectory()).path + 'flutter.svg',
+  ///   options: Options(
+  ///     headers: {HttpHeaders.acceptEncodingHeader: "*"}, // Disable gzip
+  ///   ),
+  ///   onProgress: (received, total) {
+  ///     if (total != -1) {
+  ///       print((received / total * 100).toStringAsFixed(0) + "%");
+  ///     }
+  ///   },
+  /// );
+  /// ```
+  /// {@endtemplate}
   Future<Response> download(
     String urlPath,
     Object savePath, {
@@ -230,45 +243,7 @@ abstract class Dio {
     Options? options,
   });
 
-  ///  Download the file and save it in local. The default http method is "GET",
-  ///  you can custom it by [Options.method].
-  ///
-  ///  [uri]: The file url.
-  ///
-  ///  [savePath]: The path to save the downloading file later. it can be a String or
-  ///  a callback:
-  ///  1. A path with String type, eg "xs.jpg"
-  ///  2. A callback `String Function(Headers)`; for example:
-  ///  ```dart
-  ///   await dio.downloadUri(uri,(Headers headers){
-  ///        // Extra info: redirect counts
-  ///        print(headers.value('redirects'));
-  ///        // Extra info: real uri
-  ///        print(headers.value('uri'));
-  ///       ...
-  ///       return "...";
-  ///    });
-  ///  ```
-  ///
-  ///  [onReceiveProgress]: The callback to listen downloading progress.
-  ///  please refer to [ProgressCallback].
-  ///
-  ///  [lengthHeader] : The real size of original file (not compressed).
-  ///  When file is compressed:
-  ///  1. If this value is 'content-length', the `total` argument of `onProgress` will be -1
-  ///  2. If this value is not 'content-length', maybe a custom header indicates the original
-  ///  file size , the `total` argument of `onProgress` will be this header value.
-  ///
-  ///  you can also disable the compression by specifying the 'accept-encoding' header value as '*'
-  ///  to assure the value of `total` argument of `onProgress` is not -1. for example:
-  ///
-  ///     await dio.downloadUri(uri, "./example/flutter.svg",
-  ///     options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),  // disable gzip
-  ///     onProgress: (received, total) {
-  ///       if (total != -1) {
-  ///        print((received / total * 100).toStringAsFixed(0) + "%");
-  ///       }
-  ///     });
+  /// {@macro dio.Dio.download}
   Future<Response> downloadUri(
     Uri uri,
     Object savePath, {
@@ -278,7 +253,18 @@ abstract class Dio {
     String lengthHeader = Headers.contentLengthHeader,
     Object? data,
     Options? options,
-  });
+  }) {
+    return download(
+      uri.toString(),
+      savePath,
+      onReceiveProgress: onReceiveProgress,
+      lengthHeader: lengthHeader,
+      deleteOnError: deleteOnError,
+      cancelToken: cancelToken,
+      data: data,
+      options: options,
+    );
+  }
 
   /// Make http request with options.
   ///

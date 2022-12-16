@@ -278,94 +278,6 @@ abstract class DioMixin implements Dio {
     );
   }
 
-  ///  Download the file and save it in local. The default http method is 'GET',
-  ///  you can custom it by [Options.method].
-  ///
-  ///  [urlPath]: The file url.
-  ///
-  ///  [savePath]: The path to save the downloading file later. it can be a String or
-  ///  a callback:
-  ///  1. A path with String type, eg 'xs.jpg'
-  ///  2. A callback `String Function(HttpHeaders responseHeaders)`; for example:
-  ///  ```dart
-  ///   await dio.download(url,(HttpHeaders responseHeaders){
-  ///      ...
-  ///      return '...';
-  ///    });
-  ///  ```
-  ///
-  ///  [onReceiveProgress]: The callback to listen downloading progress.
-  ///  please refer to [ProgressCallback].
-  ///
-  /// [deleteOnError] Whether delete the file when error occurs. The default value is [true].
-  ///
-  ///  [lengthHeader] : The real size of original file (not compressed).
-  ///  When file is compressed:
-  ///  1. If this value is 'content-length', the `total` argument of `onProgress` will be -1
-  ///  2. If this value is not 'content-length', maybe a custom header indicates the original
-  ///  file size , the `total` argument of `onProgress` will be this header value.
-  ///
-  ///  you can also disable the compression by specifying the 'accept-encoding' header value as '*'
-  ///  to assure the value of `total` argument of `onProgress` is not -1. for example:
-  ///
-  ///     await dio.download(url, './example/flutter.svg',
-  ///     options: Options(headers: {HttpHeaders.acceptEncodingHeader: '*'}),  // disable gzip
-  ///     onProgress: (received, total) {
-  ///       if (total != -1) {
-  ///        print((received / total * 100).toStringAsFixed(0) + '%');
-  ///       }
-  ///     });
-
-  @override
-  Future<Response> download(
-    String urlPath,
-    savePath, {
-    ProgressCallback? onReceiveProgress,
-    Map<String, dynamic>? queryParameters,
-    CancelToken? cancelToken,
-    bool deleteOnError = true,
-    String lengthHeader = Headers.contentLengthHeader,
-    data,
-    Options? options,
-  }) async {
-    throw UnsupportedError('Unsupport download API in browser');
-  }
-
-  ///  Download the file and save it in local. The default http method is 'GET',
-  ///  you can custom it by [Options.method].
-  ///
-  ///  [uri]: The file url.
-  ///
-  ///  [savePath]: The path to save the downloading file later. it can be a String or
-  ///  a callback:
-  ///  1. A path with String type, eg 'xs.jpg'
-  ///  2. A callback `String Function(HttpHeaders responseHeaders)`; for example:
-  ///  ```dart
-  ///   await dio.downloadUri(uri,(HttpHeaders responseHeaders){
-  ///      ...
-  ///      return '...';
-  ///    });
-  ///  ```
-  ///
-  ///  [onReceiveProgress]: The callback to listen downloading progress.
-  ///  please refer to [ProgressCallback].
-  ///
-  ///  [lengthHeader] : The real size of original file (not compressed).
-  ///  When file is compressed:
-  ///  1. If this value is 'content-length', the `total` argument of `onProgress` will be -1
-  ///  2. If this value is not 'content-length', maybe a custom header indicates the original
-  ///  file size , the `total` argument of `onProgress` will be this header value.
-  ///
-  ///  you can also disable the compression by specifying the 'accept-encoding' header value as '*'
-  ///  to assure the value of `total` argument of `onProgress` is not -1. for example:
-  ///
-  ///     await dio.downloadUri(uri, './example/flutter.svg',
-  ///     options: Options(headers: {HttpHeaders.acceptEncodingHeader: '*'}),  // disable gzip
-  ///     onProgress: (received, total) {
-  ///       if (total != -1) {
-  ///        print((received / total * 100).toStringAsFixed(0) + '%');
-  ///       }
-  ///     });
   @override
   Future<Response> downloadUri(
     Uri uri,
@@ -386,6 +298,23 @@ abstract class DioMixin implements Dio {
       cancelToken: cancelToken,
       data: data,
       options: options,
+    );
+  }
+
+  @override
+  Future<Response> download(
+    String urlPath,
+    Object savePath, {
+    ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    bool deleteOnError = true,
+    String lengthHeader = Headers.contentLengthHeader,
+    Object? data,
+    Options? options,
+  }) {
+    throw UnsupportedError(
+      'download() is not available in the current environment.',
     );
   }
 
