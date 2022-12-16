@@ -55,7 +55,7 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
     final completer = Completer<ResponseBody>();
 
     xhr.onLoad.first.then((_) {
-      Uint8List body = (xhr.response as ByteBuffer).asUint8List();
+      final Uint8List body = (xhr.response as ByteBuffer).asUint8List();
       completer.complete(
         ResponseBody.fromBytes(
           body,

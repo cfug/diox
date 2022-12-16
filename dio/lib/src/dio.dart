@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'adapter.dart';
 import 'dio_mixin.dart';
 import 'options.dart';
@@ -6,6 +7,7 @@ import 'headers.dart';
 import 'cancel_token.dart';
 import 'transformer.dart';
 import 'response.dart';
+
 import 'dio/dio_for_native.dart'
     if (dart.library.html) 'dio/dio_for_browser.dart';
 
@@ -80,7 +82,7 @@ abstract class Dio {
   /// Handy method to make http POST request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> post<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -91,7 +93,7 @@ abstract class Dio {
   /// Handy method to make http POST request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> postUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
@@ -101,7 +103,7 @@ abstract class Dio {
   /// Handy method to make http PUT request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> put<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -112,7 +114,7 @@ abstract class Dio {
   /// Handy method to make http PUT request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> putUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
@@ -122,7 +124,7 @@ abstract class Dio {
   /// Handy method to make http HEAD request, which is a alias of [dio.fetch(RequestOptions)].
   Future<Response<T>> head<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -131,7 +133,7 @@ abstract class Dio {
   /// Handy method to make http HEAD request, which is a alias of [dio.fetch(RequestOptions)].
   Future<Response<T>> headUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
   });
@@ -139,7 +141,7 @@ abstract class Dio {
   /// Handy method to make http DELETE request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> delete<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -148,7 +150,7 @@ abstract class Dio {
   /// Handy method to make http DELETE request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> deleteUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
   });
@@ -156,7 +158,7 @@ abstract class Dio {
   /// Handy method to make http PATCH request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> patch<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -167,7 +169,7 @@ abstract class Dio {
   /// Handy method to make http PATCH request, which is a alias of  [dio.fetch(RequestOptions)].
   Future<Response<T>> patchUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
@@ -218,13 +220,13 @@ abstract class Dio {
 
   Future<Response> download(
     String urlPath,
-    savePath, {
+    Object savePath, {
     ProgressCallback? onReceiveProgress,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     bool deleteOnError = true,
     String lengthHeader = Headers.contentLengthHeader,
-    data,
+    Object? data,
     Options? options,
   });
 
@@ -269,12 +271,12 @@ abstract class Dio {
   ///     });
   Future<Response> downloadUri(
     Uri uri,
-    savePath, {
+    Object savePath, {
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
     bool deleteOnError = true,
     String lengthHeader = Headers.contentLengthHeader,
-    data,
+    Object? data,
     Options? options,
   });
 
@@ -285,7 +287,7 @@ abstract class Dio {
   /// [options] The request options.
   Future<Response<T>> request<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
@@ -300,7 +302,7 @@ abstract class Dio {
   /// [options] The request options.
   Future<Response<T>> requestUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     CancelToken? cancelToken,
     Options? options,
     ProgressCallback? onSendProgress,

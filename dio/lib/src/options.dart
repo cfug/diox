@@ -279,7 +279,7 @@ class Options {
   RequestOptions compose(
     BaseOptions baseOpt,
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,

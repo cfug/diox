@@ -216,7 +216,7 @@ typedef InterceptorSendCallback = void Function(
 );
 
 typedef InterceptorSuccessCallback = void Function(
-  Response e,
+  Response<dynamic> e,
   ResponseInterceptorHandler handler,
 );
 
@@ -240,7 +240,10 @@ mixin _InterceptorWrapperMixin on Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     if (_onResponse != null) {
       _onResponse!(response, handler);
     } else {
@@ -298,7 +301,7 @@ class Interceptors extends ListMixin<Interceptor> {
   Interceptor operator [](int index) => _list[index];
 
   @override
-  void operator []=(int index, value) {
+  void operator []=(int index, Interceptor value) {
     if (_list.length == index) {
       _list.add(value);
     } else {
@@ -337,7 +340,10 @@ class QueuedInterceptor extends Interceptor {
     _handleQueue(_requestQueue, options, handler, onRequest);
   }
 
-  void _handleResponse(Response response, ResponseInterceptorHandler handler) {
+  void _handleResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     _handleQueue(_responseQueue, response, handler, onResponse);
   }
 

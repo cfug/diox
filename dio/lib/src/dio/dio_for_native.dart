@@ -64,13 +64,13 @@ class DioForNative with DioMixin implements Dio {
   @override
   Future<Response> download(
     String urlPath,
-    savePath, {
+    Object savePath, {
     ProgressCallback? onReceiveProgress,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     bool deleteOnError = true,
     String lengthHeader = Headers.contentLengthHeader,
-    data,
+    Object? data,
     Options? options,
   }) async {
     // We set the `responseType` to [ResponseType.STREAM] to retrieve the
@@ -148,10 +148,9 @@ class DioForNative with DioMixin implements Dio {
       total = int.parse(response.headers.value(lengthHeader) ?? '-1');
     }
 
-    late StreamSubscription subscription;
-    Future? asyncWrite;
+    Future<void>? asyncWrite;
     bool closed = false;
-    Future closeAndDelete() async {
+    Future<void> closeAndDelete() async {
       if (!closed) {
         closed = true;
         await asyncWrite;
@@ -162,6 +161,7 @@ class DioForNative with DioMixin implements Dio {
       }
     }
 
+    late StreamSubscription subscription;
     subscription = stream.listen(
       (data) {
         subscription.pause();

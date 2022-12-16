@@ -126,8 +126,11 @@ class IOHttpClientAdapter implements HttpClientAdapter {
     if (validateCertificate != null) {
       final host = options.uri.host;
       final port = options.uri.port;
-      final isCertApproved =
-          validateCertificate!(responseStream.certificate, host, port);
+      final bool isCertApproved = validateCertificate!(
+        responseStream.certificate,
+        host,
+        port,
+      );
       if (!isCertApproved) {
         throw DioError(
           requestOptions: options,

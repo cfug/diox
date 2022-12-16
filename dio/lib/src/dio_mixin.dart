@@ -88,7 +88,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> post<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -110,7 +110,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> postUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
@@ -130,7 +130,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> put<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -152,7 +152,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> putUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
@@ -172,7 +172,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> head<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -190,7 +190,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> headUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
   }) {
@@ -206,7 +206,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> delete<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -224,7 +224,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> deleteUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
   }) {
@@ -240,7 +240,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> patch<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -262,7 +262,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> patchUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
@@ -369,12 +369,12 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response> downloadUri(
     Uri uri,
-    savePath, {
+    Object savePath, {
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
     bool deleteOnError = true,
     String lengthHeader = Headers.contentLengthHeader,
-    data,
+    Object? data,
     Options? options,
   }) {
     return download(
@@ -397,7 +397,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> requestUri<T>(
     Uri uri, {
-    data,
+    Object? data,
     CancelToken? cancelToken,
     Options? options,
     ProgressCallback? onSendProgress,
@@ -421,7 +421,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> request<T>(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
@@ -669,11 +669,11 @@ abstract class DioMixin implements Dio {
     //                | "/" | "[" | "]" | "?" | "="
     //                | "{" | "}" | SP | HT
     // token          = 1*<any CHAR except CTLs or separators>
-    const validChars = r"                                "
+    const String validChars = r"                                "
         r" ! #$%&'  *+ -. 0123456789      "
         r" ABCDEFGHIJKLMNOPQRSTUVWXYZ   ^_"
         r"`abcdefghijklmnopqrstuvwxyz | ~ ";
-    for (int codeUnit in token.codeUnits) {
+    for (final int codeUnit in token.codeUnits) {
       if (codeUnit >= validChars.length ||
           validChars.codeUnitAt(codeUnit) == 0x20) {
         return false;
@@ -765,7 +765,7 @@ abstract class DioMixin implements Dio {
   }
 
   static DioError assureDioError(
-    err,
+    Object err,
     RequestOptions requestOptions,
     StackTrace? sourceStackTrace,
   ) {
@@ -781,7 +781,7 @@ abstract class DioMixin implements Dio {
   }
 
   static Response<T> assureResponse<T>(
-    response, [
+    Object response, [
     RequestOptions? requestOptions,
   ]) {
     if (response is! Response) {
