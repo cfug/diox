@@ -448,11 +448,7 @@ abstract class DioMixin implements Dio {
       return (err, stackTrace) {
         if (err is! InterceptorState) {
           err = InterceptorState(
-            assureDioError(
-              err,
-              requestOptions,
-              stackTrace,
-            ),
+            assureDioError(err, requestOptions, stackTrace),
           );
         }
 
@@ -476,8 +472,9 @@ abstract class DioMixin implements Dio {
     // execute in FIFO order.
 
     // Start the request flow
-    Future<dynamic> future =
-        Future<dynamic>(() => InterceptorState(requestOptions));
+    Future<dynamic> future = Future<dynamic>(
+      () => InterceptorState(requestOptions),
+    );
 
     // Add request interceptors to request flow
     for (final interceptor in interceptors) {
@@ -680,7 +677,9 @@ abstract class DioMixin implements Dio {
   }
 
   static Future<T> listenCancelForAsyncTask<T>(
-      CancelToken? cancelToken, Future<T> future) {
+    CancelToken? cancelToken,
+    Future<T> future,
+  ) {
     return Future.any([
       if (cancelToken != null) cancelToken.whenCancel.then((e) => throw e),
       future,
