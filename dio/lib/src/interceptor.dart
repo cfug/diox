@@ -13,13 +13,13 @@ enum InterceptorResultType {
 /// Internal class, It is used to pass state between current and next interceptors.
 /// @nodoc
 class InterceptorState<T> {
-  InterceptorState(this.data, [this.type = InterceptorResultType.next]);
+  const InterceptorState(this.data, [this.type = InterceptorResultType.next]);
 
-  T data;
-  InterceptorResultType type;
+  final T data;
+  final InterceptorResultType type;
 }
 
-class _BaseHandler {
+abstract class _BaseHandler {
   final _completer = Completer<InterceptorState>();
   void Function()? _processNextInQueue;
 
