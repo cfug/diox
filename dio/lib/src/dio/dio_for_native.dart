@@ -64,21 +64,20 @@ class DioForNative with DioMixin implements Dio {
       rethrow;
     }
     final File file;
-    if (savePath is Function) {
-      if (savePath is! String Function(Headers)) {
-        throw ArgumentError.value(
-          savePath.runtimeType,
-          'savePath',
-          'The type must be `String Function(HttpHeaders)`.',
-        );
-      }
+    if (savePath is String Function(Headers)) {
       // Add real Uri and redirect information to headers.
       response.headers
         ..add('redirects', response.redirects.length.toString())
         ..add('uri', response.realUri.toString());
       file = File(savePath(response.headers));
+    } else if (savePath is String) {
+      file = File(savePath);
     } else {
-      file = File(savePath.toString());
+      throw ArgumentError.value(
+        savePath.runtimeType,
+        'savePath',
+        'The type must be `String` or `String Function(Headers)`.',
+      );
     }
 
     // If the directory (or file) doesn't exist yet, the entire method fails.
