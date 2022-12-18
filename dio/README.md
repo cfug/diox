@@ -62,7 +62,7 @@ dependencies:
 ```
 
 The latest version is: ![Pub](https://img.shields.io/pub/v/dio.svg)
-The latest version including pre-releases is: ![Pub](ttps://img.shields.io/pub/v/dio?include_prereleases)
+The latest version including pre-releases is: ![Pub](https://img.shields.io/pub/v/dio?include_prereleases)
 
 ### Super simple to use
 
@@ -844,6 +844,6 @@ The project is originally authored by
 with the organization
 [@flutterchina](https://github.com/flutterchina),
 hard-forked at 2022 and maintained by
-[@cfug]((https://github.com/cfug).
+[@cfug](https://github.com/cfug).
 
 The project consents [the MIT license](LICENSE).

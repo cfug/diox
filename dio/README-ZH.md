@@ -58,7 +58,7 @@ dependencies:
 ```
 
 最新稳定版本为：![Pub](https://img.shields.io/pub/v/dio.svg)
-最新包含开发版的版本为：![Pub](ttps://img.shields.io/pub/v/dio?include_prereleases)
+最新包含开发版的版本为：![Pub](https://img.shields.io/pub/v/dio?include_prereleases)
 
 ## 一个极简的示例
 
@@ -795,7 +795,7 @@ class MyDio with DioMixin implements Dio {
 
 该项目由 [@flutterchina](https://github.com/flutterchina)
 开源组织的 [@wendux](https://github.com/wendux) 创作，
-并在 2022 年由 [@cfug]((https://github.com/cfug)
+并在 2022 年由 [@cfug](https://github.com/cfug)
 组织进行硬分叉并维护。
 
 该项目遵循 [MIT 开源协议](LICENSE)。
