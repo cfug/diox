@@ -855,6 +855,6 @@ The project is originally authored by
 with the organization
 [@flutterchina](https://github.com/flutterchina),
 hard-forked at 2022 and maintained by
-[@cfug]((https://github.com/cfug).
+[@cfug](https://github.com/cfug).
 
 The project consents [the MIT license](LICENSE).
