@@ -62,7 +62,7 @@ dependencies:
 ```
 
 The latest version is: ![Pub](https://img.shields.io/pub/v/diox.svg)
-The latest version including pre-releases is: ![Pub](ttps://img.shields.io/pub/v/diox?include_prereleases)
+The latest version including pre-releases is: ![Pub](https://img.shields.io/pub/v/diox?include_prereleases)
 
 To use `diox` as a `dio`'s fork, use `dependency_overrides` in your `pubspec.yaml`:
 
