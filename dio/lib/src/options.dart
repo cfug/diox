@@ -99,6 +99,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
+    this.setRequestContentTypeWhenNoPayload = false,
   })  : assert(connectTimeout == null || !connectTimeout.isNegative),
         assert(baseUrl.isEmpty || Uri.parse(baseUrl).host.isNotEmpty),
         super(
@@ -144,6 +145,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
+    bool? setRequestContentTypeWhenNoPayload,
   }) {
     return BaseOptions(
       method: method ?? this.method,
@@ -165,8 +167,14 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
       requestEncoder: requestEncoder ?? this.requestEncoder,
       responseDecoder: responseDecoder ?? this.responseDecoder,
       listFormat: listFormat ?? this.listFormat,
+      setRequestContentTypeWhenNoPayload: setRequestContentTypeWhenNoPayload ??
+          this.setRequestContentTypeWhenNoPayload,
     );
   }
+
+  /// If the value is `false`, `content-type` in request header will be null
+  /// by default until users explicitly define the corresponding value.
+  bool setRequestContentTypeWhenNoPayload;
 }
 
 mixin OptionsMixin {
