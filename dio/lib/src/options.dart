@@ -172,8 +172,13 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     );
   }
 
-  /// If the value is `false`, `content-type` in request header will be null
-  /// by default until users explicitly define the corresponding value.
+  /// The option will try to imply the default `content-type` header value
+  /// if there is a payload in requests and if the header value not set.
+  ///
+  /// The `content-type` header value will be implied to
+  /// [Headers.jsonContentType] when:
+  /// - [RequestOptions.data] is null and the option is true.
+  /// - [RequestOptions.data] is not null.
   bool setRequestContentTypeWhenNoPayload;
 }
 
