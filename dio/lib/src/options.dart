@@ -300,10 +300,14 @@ class Options {
 
     final headers = caseInsensitiveKeyMap(baseOpt.headers);
     headers.remove(Headers.contentTypeHeader);
-    if (this.headers != null) {
-      headers.addAll(this.headers!);
+    headers.addAll(this.headers ?? {});
+    // Imply the default content type if capable.
+    if (data != null ||
+        baseOpt.setRequestContentTypeWhenNoPayload && data == null) {
+      headers[Headers.contentTypeHeader] ??= Headers.jsonContentType;
     }
-    final String? contentType = this.headers?[Headers.contentTypeHeader];
+    final String? contentType =
+        headers[Headers.contentTypeHeader] ?? this.contentType;
     final extra = Map<String, dynamic>.from(baseOpt.extra);
     if (this.extra != null) {
       extra.addAll(this.extra!);
