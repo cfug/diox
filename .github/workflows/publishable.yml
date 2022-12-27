@@ -7,12 +7,14 @@ on:
     paths:
       - "**.md"
       - "**.yaml"
+      - "**.yml"
   pull_request:
     branches:
       - main
     paths:
       - "**.md"
       - "**.yaml"
+      - "**.yml"
 
 jobs:
   publish-dry-run:
