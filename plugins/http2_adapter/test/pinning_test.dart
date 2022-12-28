@@ -14,7 +14,7 @@ void main() {
   // setting or other differences (like host name) that make them bad.
   final lines = File('test/_pinning_http2.txt').readAsLinesSync();
   final fingerprint =
-  lines.first.split('=').last.toLowerCase().replaceAll(':', '');
+      lines.first.split('=').last.toLowerCase().replaceAll(':', '');
 
   group('SSL pinning', () {
     final Dio dio = Dio()
@@ -175,5 +175,4 @@ void main() {
       expect(res.data.toString(), contains(expectedHostString));
     });
   });
-
 }
