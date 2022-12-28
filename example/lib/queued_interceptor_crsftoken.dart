@@ -11,7 +11,7 @@ void main() async {
   dio.options.baseUrl = 'https://seunghwanlytest.mocklab.io/';
   tokenDio.options = dio.options;
   dio.interceptors.add(QueuedInterceptorsWrapper(
-    onRequest: (options, handler) async {
+    onRequest: (options, handler, dio) async {
       print('send request：path:${options.path}，baseURL:${options.baseUrl}');
 
       if (csrfToken == null) {
@@ -42,7 +42,7 @@ void main() async {
       options.headers['csrfToken'] = csrfToken;
       return handler.next(options);
     },
-    onError: (error, handler) async {
+    onError: (error, handler, dio) async {
       /// Assume 401 stands for token expired
       if (error.response?.statusCode == 401) {
         print('the token has expired, need to receive new token');

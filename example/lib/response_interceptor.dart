@@ -10,11 +10,11 @@ void main() async {
   final dio = Dio();
   dio.options.baseUrl = 'https://httpbin.org/';
   dio.interceptors.add(InterceptorsWrapper(
-    onResponse: (response, handler) {
+    onResponse: (response, handler, dio) {
       response.data = json.decode(response.data['data']);
       handler.next(response);
     },
-    onError: (DioError e, handler) {
+    onError: (DioError e, handler, dio) {
       if (e.response != null) {
         switch (e.response!.requestOptions.path) {
           case urlNotFound:

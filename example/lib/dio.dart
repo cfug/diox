@@ -28,7 +28,7 @@ void main() async {
   //  ));
   dio.interceptors
     ..add(InterceptorsWrapper(
-      onRequest: (options, handler) {
+      onRequest: (options, handler, dio) {
         // return handler.resolve( Response(data:"xxx"));
         // return handler.reject( DioError(message: "eh"));
         return handler.next(options);

@@ -6,7 +6,11 @@ class CacheInterceptor extends Interceptor {
   final _cache = <Uri, Response>{};
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+    Dio dio,
+  ) {
     final response = _cache[options.uri];
     if (options.extra['refresh'] == true) {
       print('${options.uri}: force refresh, ignore cache! \n');
@@ -15,19 +19,27 @@ class CacheInterceptor extends Interceptor {
       print('cache hit: ${options.uri} \n');
       return handler.resolve(response);
     }
-    super.onRequest(options, handler);
+    super.onRequest(options, handler, dio);
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response response,
+    ResponseInterceptorHandler handler,
+    Dio dio,
+  ) {
     _cache[response.requestOptions.uri] = response;
-    super.onResponse(response, handler);
+    super.onResponse(response, handler, dio);
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(
+    DioError err,
+    ErrorInterceptorHandler handler,
+    Dio dio,
+  ) {
     print('onError: $err');
-    super.onError(err, handler);
+    super.onError(err, handler, dio);
   }
 }
 
