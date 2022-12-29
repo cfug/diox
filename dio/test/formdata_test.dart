@@ -6,7 +6,7 @@ import 'package:diox/diox.dart';
 import 'package:test/test.dart';
 
 void main() async {
-  test('#test FormData', () async {
+  test('FormData', () async {
     final fm = FormData.fromMap({
       'name': 'wendux',
       'age': 25,
