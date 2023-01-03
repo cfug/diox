@@ -56,9 +56,8 @@ timeout, and custom adapters etc.
 
 ### Add dependency
 
-```yaml
-dependencies:
-  diox: ^replace-with-latest-version
+```console
+$ dart pub add diox
 ```
 
 The latest version is: ![Pub](https://img.shields.io/pub/v/diox.svg)
