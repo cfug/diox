@@ -63,19 +63,24 @@ abstract class Transformer {
 /// you can provide a [Transformer] by your self, and replace
 /// the [DefaultTransformer] by setting the [dio.transformer].
 
-typedef JsonDecodeCallback = dynamic Function(String);
+typedef JsonDecodeCallback = FutureOr<dynamic> Function(String);
+typedef JsonEncodeCallback = FutureOr<String> Function(Object);
 
 class DefaultTransformer extends Transformer {
-  DefaultTransformer({this.jsonDecodeCallback});
+  DefaultTransformer({
+    this.jsonDecodeCallback = jsonDecode,
+    this.jsonEncodeCallback = jsonEncode,
+  });
 
-  JsonDecodeCallback? jsonDecodeCallback;
+  JsonDecodeCallback jsonDecodeCallback;
+  JsonEncodeCallback jsonEncodeCallback;
 
   @override
   Future<String> transformRequest(RequestOptions options) async {
     final data = options.data ?? '';
     if (data is! String) {
       if (Transformer.isJsonMimeType(options.contentType)) {
-        return json.encode(options.data);
+        return jsonEncodeCallback(options.data);
       } else if (data is Map) {
         options.contentType =
             options.contentType ?? Headers.formUrlEncodedContentType;
@@ -133,21 +138,7 @@ class DefaultTransformer extends Transformer {
     options.cancelToken?.whenCancel.then((_) {
       return subscription.cancel();
     });
-    // if (options.receiveTimeout > 0) {
-    //   try {
-    //     await completer.future
-    //         .timeout(Duration(milliseconds: options.receiveTimeout));
-    //   } on TimeoutException {
-    //     await subscription.cancel();
-    //     throw DioError(
-    //       requestOptions: options,
-    //       error: 'Receiving data timeout[${options.receiveTimeout}ms]',
-    //       type: DioErrorType.receiveTimeout,
-    //     );
-    //   }
-    // } else {
     await completer.future;
-    //}
     // we create a final Uint8List and copy all chunks into it
     final responseBytes = Uint8List(finalSize);
     int chunkOffset = 0;
@@ -177,12 +168,7 @@ class DefaultTransformer extends Transformer {
         options.responseType == ResponseType.json &&
         Transformer.isJsonMimeType(
             response.headers[Headers.contentTypeHeader]?.first)) {
-      final callback = jsonDecodeCallback;
-      if (callback != null) {
-        return callback(responseBody);
-      } else {
-        return json.decode(responseBody);
-      }
+      return jsonDecodeCallback(responseBody);
     }
     return responseBody;
   }
