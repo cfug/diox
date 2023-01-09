@@ -27,7 +27,11 @@ void main() async {
 
 class ProblemInterceptor extends Interceptor {
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response response,
+    ResponseInterceptorHandler handler,
+    Dio dio,
+  ) {
     throw Exception('Unexpected problem inside onResponse');
   }
 }

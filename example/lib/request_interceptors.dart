@@ -4,7 +4,7 @@ void main() async {
   final dio = Dio();
   dio.options.baseUrl = 'https://httpbin.org/';
   dio.options.connectTimeout = Duration(seconds: 5);
-  dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+  dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler, dio) {
     switch (options.path) {
       case '/fakepath1':
         return handler.resolve(

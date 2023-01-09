@@ -9,9 +9,13 @@ class MyInterceptor extends Interceptor {
   int requestCount = 0;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+    Dio dio,
+  ) {
     requestCount++;
-    return super.onRequest(options, handler);
+    return super.onRequest(options, handler, dio);
   }
 }
 
@@ -23,7 +27,7 @@ void main() {
       dio.httpClientAdapter = EchoAdapter();
       dio.interceptors
         ..add(InterceptorsWrapper(
-          onRequest: (reqOpt, handler) {
+          onRequest: (reqOpt, handler, dio) {
             switch (reqOpt.path) {
               case '/resolve':
                 handler.resolve(Response(requestOptions: reqOpt, data: 1));
@@ -77,7 +81,7 @@ void main() {
                 handler.next(reqOpt); //continue
             }
           },
-          onResponse: (response, ResponseInterceptorHandler handler) {
+          onResponse: (response, ResponseInterceptorHandler handler, dio) {
             final options = response.requestOptions;
             switch (options.path) {
               case '/resolve':
@@ -106,7 +110,7 @@ void main() {
                 handler.next(response); //continue
             }
           },
-          onError: (err, handler) {
+          onError: (err, handler, dio) {
             if (err.requestOptions.path == '/reject-next-response') {
               handler.resolve(Response(
                 requestOptions: err.requestOptions,
@@ -126,8 +130,8 @@ void main() {
           },
         ))
         ..add(InterceptorsWrapper(
-          onRequest: (options, handler) => handler.next(options),
-          onResponse: (response, handler) {
+          onRequest: (options, handler, dio) => handler.next(options),
+          onResponse: (response, handler, dio) {
             final options = response.requestOptions;
             switch (options.path) {
               case '/resolve-next/always':
@@ -138,7 +142,7 @@ void main() {
                 handler.next(response); //continue
             }
           },
-          onError: (err, handler) {
+          onError: (err, handler, dio) {
             if (err.requestOptions.path == '/resolve-next/reject-next') {
               int count = err.error as int;
               count++;
@@ -201,13 +205,13 @@ void main() {
       dio.httpClientAdapter = EchoAdapter();
       dio.interceptors.add(
         InterceptorsWrapper(
-          onRequest: (reqOpt, handler) {
+          onRequest: (reqOpt, handler, dio) {
             if (reqOpt.path == '/error') {
               throw 'unexpected';
             }
             handler.next(reqOpt.copyWith(path: '/xxx'));
           },
-          onError: (err, handler) {
+          onError: (err, handler, dio) {
             handler.next(err.copyWith(error: 'unexpected error'));
           },
         ),
@@ -231,6 +235,7 @@ void main() {
       dio.interceptors.add(InterceptorsWrapper(onRequest: (
         RequestOptions options,
         RequestInterceptorHandler handler,
+        Dio dio,
       ) {
         switch (options.path) {
           case '/fakepath1':
@@ -315,11 +320,11 @@ void main() {
       dio.options.baseUrl = MockAdapter.mockBase;
 
       dio.interceptors.add(InterceptorsWrapper(
-        onResponse: (response, handler) {
+        onResponse: (response, handler, dio) {
           response.data = response.data['data'];
           handler.next(response);
         },
-        onError: (DioError e, ErrorInterceptorHandler handler) {
+        onError: (DioError e, ErrorInterceptorHandler handler, dio) {
           if (e.response?.requestOptions != null) {
             switch (e.response!.requestOptions.path) {
               case urlNotFound:
@@ -372,19 +377,19 @@ void main() {
       dio.options.baseUrl = MockAdapter.mockBase;
       dio.interceptors
         ..add(InterceptorsWrapper(
-          onResponse: (resp, handler) {
+          onResponse: (resp, handler, dio) {
             resp.data = resp.data['data'];
             handler.next(resp);
           },
         ))
         ..add(InterceptorsWrapper(
-          onResponse: (resp, handler) {
+          onResponse: (resp, handler, dio) {
             resp.data['extra_1'] = 'extra';
             handler.next(resp);
           },
         ))
         ..add(InterceptorsWrapper(
-          onResponse: (resp, handler) {
+          onResponse: (resp, handler, dio) {
             resp.data['extra_2'] = 'extra';
             handler.next(resp);
           },
@@ -408,7 +413,7 @@ void main() {
       final myInter = MyInterceptor();
       dio.interceptors.add(myInter);
       dio.interceptors.add(QueuedInterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler, dio) {
           if (csrfToken == null) {
             tokenRequestCounts++;
             tokenDio.get('/token').then((d) {
@@ -453,11 +458,11 @@ void main() {
       dio.httpClientAdapter = tokenDio.httpClientAdapter = MockAdapter();
       dio.interceptors.add(
         QueuedInterceptorsWrapper(
-          onRequest: (opt, handler) {
+          onRequest: (opt, handler, dio) {
             opt.headers['csrfToken'] = csrfToken;
             handler.next(opt);
           },
-          onError: (error, handler) {
+          onError: (error, handler, dio) {
             // Assume 401 stands for token expired
             if (error.response?.statusCode == 401) {
               final options = error.response!.requestOptions;

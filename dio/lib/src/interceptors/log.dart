@@ -1,3 +1,4 @@
+import '../dio.dart';
 import '../dio_error.dart';
 import '../dio_mixin.dart';
 import '../options.dart';
@@ -50,7 +51,10 @@ class LogInterceptor extends Interceptor {
 
   @override
   void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+    Dio dio,
+  ) async {
     logPrint('*** Request ***');
     _printKV('uri', options.uri);
     //options.headers;
@@ -81,14 +85,22 @@ class LogInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) async {
+  void onResponse(
+    Response response,
+    ResponseInterceptorHandler handler,
+    Dio dio,
+  ) async {
     logPrint('*** Response ***');
     _printResponse(response);
     handler.next(response);
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) async {
+  void onError(
+    DioError err,
+    ErrorInterceptorHandler handler,
+    Dio dio,
+  ) async {
     if (error) {
       logPrint('*** DioError ***:');
       logPrint('uri: ${err.requestOptions.uri}');

@@ -8,6 +8,7 @@ void main() async {
       onRequest: (
         RequestOptions requestOptions,
         RequestInterceptorHandler handler,
+        Dio dio,
       ) {
         print(requestOptions.uri);
         Future.delayed(Duration(seconds: 2), () {
@@ -28,6 +29,7 @@ void main() async {
         onRequest: (
           RequestOptions requestOptions,
           RequestInterceptorHandler handler,
+          Dio dio,
         ) {
           print(requestOptions.uri);
           Future.delayed(Duration(seconds: 2), () {

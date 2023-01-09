@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## UNRELEASED
+
+- Pass the `Dio` instance to interceptors
+
 ## 5.0.0-dev.3
 
 - Remove plain ASCII check in `FormData`.
@@ -27,6 +31,8 @@
 - Any classes specific to `dart:io` platforms can now be imported via `import 'package:diox/io.dart';`.
   Classes specific to web can be imported via `import 'package:diox/browser.dart';`.
 - `connectTimeout`, `sendTimeout`, and `receiveTimeout` are now `Duration`s.
+- Interceptor callbacks now take a 3rd argument, the `Dio` instance. This allows to easily perform
+  requests with the same `Dio` instance, for example a token refresh in a `QueuedInterceptor`.
 
 ## 4.0.6
 

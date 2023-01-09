@@ -175,6 +175,7 @@ class Interceptor {
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
+    Dio dio,
   ) {
     handler.next(options);
   }
@@ -191,6 +192,7 @@ class Interceptor {
   void onResponse(
     Response response,
     ResponseInterceptorHandler handler,
+    Dio dio,
   ) {
     handler.next(response);
   }
@@ -209,6 +211,7 @@ class Interceptor {
   void onError(
     DioError err,
     ErrorInterceptorHandler handler,
+    Dio dio,
   ) {
     handler.next(err);
   }
@@ -217,16 +220,19 @@ class Interceptor {
 typedef InterceptorSendCallback = void Function(
   RequestOptions options,
   RequestInterceptorHandler handler,
+  Dio dio,
 );
 
 typedef InterceptorSuccessCallback = void Function(
   Response<dynamic> e,
   ResponseInterceptorHandler handler,
+  Dio dio,
 );
 
 typedef InterceptorErrorCallback = void Function(
   DioError e,
   ErrorInterceptorHandler handler,
+  Dio dio,
 );
 
 mixin _InterceptorWrapperMixin on Interceptor {
@@ -238,9 +244,10 @@ mixin _InterceptorWrapperMixin on Interceptor {
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
+    Dio dio,
   ) {
     if (_onRequest != null) {
-      _onRequest!(options, handler);
+      _onRequest!(options, handler, dio);
     } else {
       handler.next(options);
     }
@@ -250,9 +257,10 @@ mixin _InterceptorWrapperMixin on Interceptor {
   void onResponse(
     Response<dynamic> response,
     ResponseInterceptorHandler handler,
+    Dio dio,
   ) {
     if (_onResponse != null) {
-      _onResponse!(response, handler);
+      _onResponse!(response, handler, dio);
     } else {
       handler.next(response);
     }
@@ -262,9 +270,10 @@ mixin _InterceptorWrapperMixin on Interceptor {
   void onError(
     DioError err,
     ErrorInterceptorHandler handler,
+    Dio dio,
   ) {
     if (_onError != null) {
-      _onError!(err, handler);
+      _onError!(err, handler, dio);
     } else {
       handler.next(err);
     }
@@ -346,41 +355,46 @@ class QueuedInterceptor extends Interceptor {
   void _handleRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
+    Dio dio,
   ) {
-    _handleQueue(_requestQueue, options, handler, onRequest);
+    _handleQueue(_requestQueue, options, handler, dio, onRequest);
   }
 
   void _handleResponse(
     Response<dynamic> response,
     ResponseInterceptorHandler handler,
+    Dio dio,
   ) {
-    _handleQueue(_responseQueue, response, handler, onResponse);
+    _handleQueue(_responseQueue, response, handler, dio, onResponse);
   }
 
   void _handleError(
     DioError err,
     ErrorInterceptorHandler handler,
+    Dio dio,
   ) {
-    _handleQueue(_errorQueue, err, handler, onError);
+    _handleQueue(_errorQueue, err, handler, dio, onError);
   }
 
   void _handleQueue<T, V extends _BaseHandler>(
     _TaskQueue taskQueue,
     T data,
     V handler,
+    Dio dio,
     callback,
   ) {
     final task = _InterceptorParams<T, V>(data, handler);
     task.handler._processNextInQueue = _processNextTaskInQueueCallback(
       taskQueue,
       callback,
+      dio,
     );
     taskQueue.queue.add(task);
     if (!taskQueue.processing) {
       taskQueue.processing = true;
       final task = taskQueue.queue.removeFirst();
       try {
-        callback(task.data, task.handler);
+        callback(task.data, task.handler, dio);
       } catch (e) {
         task.handler._processNextInQueue();
       }
@@ -388,12 +402,13 @@ class QueuedInterceptor extends Interceptor {
   }
 }
 
-void Function() _processNextTaskInQueueCallback(_TaskQueue taskQueue, cb) {
+void Function() _processNextTaskInQueueCallback(
+    _TaskQueue taskQueue, cb, Dio dio) {
   return () {
     if (taskQueue.queue.isNotEmpty) {
       final next = taskQueue.queue.removeFirst();
       assert(next.handler._processNextInQueue != null);
-      cb(next.data, next.handler);
+      cb(next.data, next.handler, dio);
     } else {
       taskQueue.processing = false;
     }

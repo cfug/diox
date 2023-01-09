@@ -22,7 +22,11 @@ class CookieManager extends Interceptor {
   }
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+    Dio dio,
+  ) {
     cookieJar.loadForRequest(options.uri).then((cookies) {
       final cookie = getCookies(cookies);
       if (cookie.isNotEmpty) {
@@ -36,7 +40,11 @@ class CookieManager extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response response,
+    ResponseInterceptorHandler handler,
+    Dio dio,
+  ) {
     _saveCookies(response).then((_) => handler.next(response)).catchError(
       (dynamic e, StackTrace s) {
         final err = DioError(
@@ -50,7 +58,11 @@ class CookieManager extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(
+    DioError err,
+    ErrorInterceptorHandler handler,
+    Dio dio,
+  ) {
     if (err.response != null) {
       _saveCookies(err.response!).then((_) => handler.next(err)).catchError(
         (dynamic e, StackTrace s) {

@@ -9,7 +9,7 @@ void main() {
     ..options.baseUrl = 'https://httpbin.org/'
     ..interceptors.add(
       QueuedInterceptorsWrapper(
-        onRequest: (options, handler) async {
+        onRequest: (options, handler, dio) async {
           // Delay 1 second before requests to avoid request too frequently.
           await Future.delayed(const Duration(seconds: 1));
           handler.next(options);
