@@ -16,7 +16,6 @@ import 'utils.dart';
 /// [Transformer]. If you want to custom the transformation of
 /// request/response data, you can provide a [Transformer] by your self, and
 /// replace the [DefaultTransformer] by setting the [dio.Transformer].
-
 abstract class Transformer {
   /// `transformRequest` allows changes to the request data before it is
   /// sent to the server, but **after** the [RequestInterceptor].
@@ -57,15 +56,17 @@ abstract class Transformer {
   }
 }
 
+/// The callback definition for decoding a JSON string.
+typedef JsonDecodeCallback = FutureOr<dynamic> Function(String);
+
+/// The callback definition for encoding a JSON object.
+typedef JsonEncodeCallback = FutureOr<String> Function(Object);
+
 /// The default [Transformer] for [Dio].
 ///
 /// If you want to custom the transformation of request/response data,
 /// you can provide a [Transformer] by your self, and replace
 /// the [DefaultTransformer] by setting the [dio.transformer].
-
-typedef JsonDecodeCallback = FutureOr<dynamic> Function(String);
-typedef JsonEncodeCallback = FutureOr<String> Function(Object);
-
 class DefaultTransformer extends Transformer {
   DefaultTransformer({
     this.jsonDecodeCallback = jsonDecode,
@@ -93,7 +94,7 @@ class DefaultTransformer extends Transformer {
   /// As an agreement, we return the [response] when the
   /// Options.responseType is [ResponseType.stream].
   @override
-  Future transformResponse(
+  Future<dynamic> transformResponse(
     RequestOptions options,
     ResponseBody response,
   ) async {
@@ -120,7 +121,7 @@ class DefaultTransformer extends Transformer {
         },
       ),
     );
-    // let's keep references to the data chunks and concatenate them later
+    // Keep references to the data chunks and concatenate them later.
     final chunks = <Uint8List>[];
     int finalSize = 0;
     final StreamSubscription subscription = stream.listen(
@@ -134,12 +135,11 @@ class DefaultTransformer extends Transformer {
       onDone: () => completer.complete(),
       cancelOnError: true,
     );
-    // ignore: unawaited_futures
     options.cancelToken?.whenCancel.then((_) {
       return subscription.cancel();
     });
     await completer.future;
-    // we create a final Uint8List and copy all chunks into it
+    // Copy all chunks into a final Uint8List.
     final responseBytes = Uint8List(finalSize);
     int chunkOffset = 0;
     for (final chunk in chunks) {
@@ -167,7 +167,8 @@ class DefaultTransformer extends Transformer {
         responseBody.isNotEmpty &&
         options.responseType == ResponseType.json &&
         Transformer.isJsonMimeType(
-            response.headers[Headers.contentTypeHeader]?.first)) {
+          response.headers[Headers.contentTypeHeader]?.first,
+        )) {
       return jsonDecodeCallback(responseBody);
     }
     return responseBody;
