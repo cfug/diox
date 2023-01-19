@@ -1,3 +1,7 @@
+// Copyright 2014 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /// This file corresponds to Flutter's
 /// [`foundation/isolates.dart`](https://github.com/flutter/flutter/blob/stable/packages/flutter/lib/src/foundation/isolates.dart).
 ///
