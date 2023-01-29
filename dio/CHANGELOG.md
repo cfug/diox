@@ -2,7 +2,7 @@
 
 ## UNRELEASED
 
-- Change `Dio.transformer` from `DefaultTransformer` to `BackgroundTransformer`
+- Change `Dio.transformer` from `DefaultTransformer` to `BackgroundTransformer`.
 
 ## 5.0.0-dev.3
 
