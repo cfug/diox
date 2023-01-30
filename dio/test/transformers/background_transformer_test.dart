@@ -1,5 +1,4 @@
 import 'package:diox/diox.dart';
-import 'package:diox/src/transformers/background_transformer/background_transformer.dart';
 import 'package:test/test.dart';
 
 void main() {
