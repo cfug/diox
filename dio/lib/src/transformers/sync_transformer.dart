@@ -35,7 +35,7 @@ class SyncTransformer extends Transformer {
     final data = options.data ?? '';
     if (data is! String) {
       if (Transformer.isJsonMimeType(options.contentType)) {
-        return jsonEncodeCallback(options.data);
+        return jsonEncodeCallback(data);
       } else if (data is Map) {
         return Transformer.urlEncodeMap(data);
       }
