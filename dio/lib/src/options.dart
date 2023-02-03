@@ -99,7 +99,6 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
-    this.setRequestContentTypeWhenNoPayload = false,
   })  : assert(connectTimeout == null || !connectTimeout.isNegative),
         assert(baseUrl.isEmpty || Uri.parse(baseUrl).host.isNotEmpty),
         super(
@@ -145,7 +144,6 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
     RequestEncoder? requestEncoder,
     ResponseDecoder? responseDecoder,
     ListFormat? listFormat,
-    bool? setRequestContentTypeWhenNoPayload,
   }) {
     return BaseOptions(
       method: method ?? this.method,
@@ -166,20 +164,9 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
       persistentConnection: persistentConnection ?? this.persistentConnection,
       requestEncoder: requestEncoder ?? this.requestEncoder,
       responseDecoder: responseDecoder ?? this.responseDecoder,
-      listFormat: listFormat ?? this.listFormat,
-      setRequestContentTypeWhenNoPayload: setRequestContentTypeWhenNoPayload ??
-          this.setRequestContentTypeWhenNoPayload,
+      listFormat: listFormat ?? this.listFormat
     );
   }
-
-  /// The option will try to imply the default `content-type` header value
-  /// if there is a payload in requests and if the header value not set.
-  ///
-  /// The `content-type` header value will be implied to
-  /// [Headers.jsonContentType] when:
-  /// - [RequestOptions.data] is null and the option is true.
-  /// - [RequestOptions.data] is not null.
-  bool setRequestContentTypeWhenNoPayload;
 }
 
 mixin OptionsMixin {
@@ -309,12 +296,6 @@ class Options {
     }
     if (this.contentType != null) {
       headers[Headers.contentTypeHeader] = this.contentType;
-    }
-    // Imply the default content type if capable.
-    // This is a historical issue that dio used to imply the json type, it'll be
-    // too breaking to let user apply a base content type at the moment.
-    if (data != null || baseOpt.setRequestContentTypeWhenNoPayload) {
-      headers[Headers.contentTypeHeader] ??= Headers.jsonContentType;
     }
     final String? contentType = headers[Headers.contentTypeHeader];
     final extra = Map<String, dynamic>.from(baseOpt.extra);
