@@ -374,17 +374,17 @@ class Options {
 
   Duration? _receiveTimeout;
 
-  /// The request Content-Type. The default value is [ContentType.json].
-  /// If you want to encode request body with 'application/x-www-form-urlencoded',
-  /// you can set `ContentType.parse('application/x-www-form-urlencoded')`, and [Dio]
-  /// will automatically encode the request body.
+  /// The request Content-Type.
+  ///
+  /// [Dio] will automatically encode the request body accordingly.
   String? contentType;
 
   /// [responseType] indicates the type of data that the server will respond with
   /// options which defined in [ResponseType] are `json`, `stream`, `plain`.
   ///
-  /// The default value is `json`, dio will parse response string to json object automatically
-  /// when the content-type of response is 'application/json'.
+  /// The default value is [ResponseType.json], [Dio] will parse response string
+  /// to JSON object automatically when the content-type of response is
+  /// [Headers.jsonContentType].
   ///
   /// If you want to receive response data with binary bytes, for example,
   /// downloading a image, use `stream`.
@@ -404,7 +404,8 @@ class Options {
   /// The default value is true
   bool? receiveDataWhenStatusError;
 
-  /// Custom field that you can retrieve it later in [Interceptor]、[Transformer] and the [Response] object.
+  /// Custom field that you can retrieve it later in
+  /// [Interceptor], [Transformer] and the [Response] object.
   Map<String, dynamic>? extra;
 
   /// see [HttpClientRequest.followRedirects],
@@ -699,11 +700,9 @@ class _RequestConfig {
 
   Duration? _receiveTimeout;
 
-  /// The request Content-Type. Defaults to [ContentType.json] if capable.
+  /// The request Content-Type.
   ///
-  /// If you want to encode request body with 'application/x-www-form-urlencoded',
-  /// you can set `ContentType.parse('application/x-www-form-urlencoded')`,
-  /// and [Dio] will automatically encode the request body.
+  /// [Dio] will automatically encode the request body accordingly.
   String? get contentType => _headers[Headers.contentTypeHeader] as String?;
 
   set contentType(String? contentType) {
