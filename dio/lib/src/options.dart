@@ -164,7 +164,7 @@ class BaseOptions extends _RequestConfig with OptionsMixin {
       persistentConnection: persistentConnection ?? this.persistentConnection,
       requestEncoder: requestEncoder ?? this.requestEncoder,
       responseDecoder: responseDecoder ?? this.responseDecoder,
-      listFormat: listFormat ?? this.listFormat
+      listFormat: listFormat ?? this.listFormat,
     );
   }
 }
