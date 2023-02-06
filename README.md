@@ -22,7 +22,7 @@ If you use it as a fork:
 1. Use `dependency_overrides` in your `pubspec.yaml`:
    ```yaml
    dependency_overrides:
-     dio:
+     dio: # Change to other names if you're using plugins.
        git:
          url: https://github.com/cfug/diox
          path: dio/ # Change to other paths if you're using plugins.
@@ -33,7 +33,7 @@ If you use it as a fork:
 
 Still, we prefer to use `diox` directly since the fork will
 **only maintain for the first 6 months** according to our announcement,
-then will be deprecated.
+then it will be deprecated.
 
 The dio branch will be synced (cherry-pick commits) before every release of packages.
 
