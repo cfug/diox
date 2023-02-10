@@ -54,6 +54,23 @@ or in every requests' `Options` or headers. To do so:
   );
   ```
 
+If you have your own request method that wraps `diox`:
+```dart
+void request(
+  Uri uri, {
+  Map<String, String?>? queryParameters,
+  Object? body,
+  Map<String, dynamic>? headers,
+  Options? options,
+  ResponseType? responseType = ResponseType.json,
+}) {
+  if (body != null) {
+    // If you have `content-type` in `headers`, it will be use first.
+    options.contentType ??= Headers.jsonContentType;
+  }
+}
+```
+
 #### `get` and `getUri`
 
 ```diff
