@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Raise Min Dart SDK version to 2.15.0 to support `BackgroundTransformer`
+- Raise the min Dart SDK version to 2.15.0 to support `BackgroundTransformer`.
 
 ## 5.0.0
 
